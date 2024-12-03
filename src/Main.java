@@ -8,7 +8,7 @@ public class Main {
         SwingUtilities.invokeLater(() -> {
             LoginFrame loginFrame = new LoginFrame(280,280);
             loginFrame.setVisible(true);
-            LevelFrame levelFrame = new LevelFrame(500,200);
+            LevelFrame levelFrame = new LevelFrame(650,200);
             levelFrame.setVisible(false);
             loginFrame.setLevelFrame(levelFrame);
         });
