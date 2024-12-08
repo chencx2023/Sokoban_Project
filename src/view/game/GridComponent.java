@@ -69,6 +69,10 @@ public class GridComponent extends JComponent {
         return id;
     }
 
+    public Hero getHero() { return hero; }
+
+    public Box getBox() { return box; }
+
     //When adding a hero in this grid, invoking this method.
     public void setHeroInGrid(Hero hero) {
         this.hero = hero;
