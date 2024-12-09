@@ -9,6 +9,8 @@ import view.game.Box;
 
 import java.util.Arrays;
 
+import javax.swing.*;
+
 /**
  * It is a bridge to combine GamePanel(view) and MapMatrix(model) in one game.
  * You can design several methods about the game logic in this class.
@@ -28,7 +30,10 @@ public class GameController {
     }
 
     public void restartGame() {
+        //ToDo: reset model & view
         System.out.println("Do restart game here");
+        this.model.resetMapMatrix();
+        this.view.restartGame();
     }
 
     public boolean doMove(int row, int col, Direction direction) {
@@ -72,5 +77,4 @@ public class GameController {
 
 
     //todo: add other methods such as loadGame, saveGame...
-
 }

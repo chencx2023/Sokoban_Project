@@ -4,6 +4,7 @@ import javax.swing.*;
 import javax.swing.border.Border;
 import java.awt.*;
 
+
 public class Box extends JComponent {
     private final int value = 10;
     private int row;
