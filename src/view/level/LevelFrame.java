@@ -1,5 +1,6 @@
 package view.level;
 
+import controller.FrameController;
 import model.MapMatrix;
 import view.FrameUtil;
 import view.game.GameFrame;
@@ -8,6 +9,8 @@ import javax.swing.*;
 import java.awt.*;
 
 public class LevelFrame extends JFrame {
+    private static FrameController frameController=new FrameController();
+    //一个LevelFrame只绑定一个FrameController,所以设置成静态的
 
     public LevelFrame(int width, int height) {
         this.setTitle("Level");
@@ -91,8 +94,11 @@ public class LevelFrame extends JFrame {
         });
         //todo: complete all level.
 
+        frameController.setLevelFrame(this); //把LevelFrame与FrameController进行绑定
         this.setLocationRelativeTo(null);
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
     }
+
+    public static FrameController getFrameController() { return frameController; }
 
 }

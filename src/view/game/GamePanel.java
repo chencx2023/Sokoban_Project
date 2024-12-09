@@ -135,6 +135,5 @@ public class GamePanel extends ListenerPanel {
                 }
             }
         }
-//为什么只能restart一次？？
     }
 }
