@@ -20,7 +20,7 @@ public class GameFrame extends JFrame {
         this.setTitle("2024 CS109 Project Demo");
         this.setLayout(null);
         this.setSize(width, height);
-        gamePanel = new GamePanel(mapMatrix);
+        gamePanel = new GamePanel(mapMatrix);//new的同时initiateGame
         gamePanel.setLocation(30, height / 2 - gamePanel.getHeight() / 2);
         this.add(gamePanel);
         this.controller = new GameController(gamePanel, mapMatrix);
@@ -33,6 +33,7 @@ public class GameFrame extends JFrame {
         this.restartBtn.addActionListener(e -> {
             controller.restartGame();
             gamePanel.requestFocusInWindow();//enable key listener
+
         });
         this.loadBtn.addActionListener(e -> {
             String string = JOptionPane.showInputDialog(this, "Input path:");

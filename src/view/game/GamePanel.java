@@ -45,7 +45,7 @@ public class GamePanel extends ListenerPanel {
                 //Ten digit maps to Box or Hero in corresponding location in the GridComponent. (Changed value)
                 switch (model.getId(i, j) / 10) {
                     case 1:
-                        grids[i][j].setBoxInGrid(new Box(GRID_SIZE - 10, GRID_SIZE - 10));
+                        grids[i][j].setBoxInGrid(new Box(GRID_SIZE - 10, GRID_SIZE - 10,i,j));
                         break;
                     case 2:
                         this.hero = new Hero(GRID_SIZE - 16, GRID_SIZE - 16, i, j);
@@ -58,6 +58,8 @@ public class GamePanel extends ListenerPanel {
         this.repaint();
     }
 
+    //继承了listenerpanel，能监视键盘的活动
+    //把domove设置成boolean就是判定是否能执行这种操作，本质上还是在domove
     @Override
     public void doMoveRight() {
         System.out.println("Click VK_RIGHT");
@@ -99,7 +101,13 @@ public class GamePanel extends ListenerPanel {
         this.stepLabel = stepLabel;
     }
 
+    public MapMatrix getModel() {
+        return model;
+    }
 
+    public void setModel(MapMatrix model) {
+        this.model = model;
+    }
 
     public void setController(GameController controller) {
         this.controller = controller;
@@ -108,4 +116,5 @@ public class GamePanel extends ListenerPanel {
     public GridComponent getGridComponent(int row, int col) {
         return grids[row][col];
     }
+
 }
