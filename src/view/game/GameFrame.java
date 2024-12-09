@@ -38,9 +38,11 @@ public class GameFrame extends JFrame {
             gamePanel.requestFocusInWindow();//enable key listener
         });
         this.loadBtn.addActionListener(e -> {
-            String string = JOptionPane.showInputDialog(this, "Input path:");
-            System.out.println(string);
-            gamePanel.requestFocusInWindow();//enable key listener
+            String path = JOptionPane.showInputDialog(this, "Input path:");
+//            String path=String.format("resource/%s/game1.txt",user.getname());
+            LevelFrame.getFrameController().loadGame(path,this);
+            System.out.println(path);
+//          gamePanel.requestFocusInWindow();//enable key listener
         });
         //todo: add other button here
         this.returnBtn.addActionListener(e -> {
