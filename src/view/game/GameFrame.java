@@ -25,7 +25,7 @@ public class GameFrame extends JFrame {
         gamePanel = new GamePanel(mapMatrix);//new的同时initiateGame
         gamePanel.setLocation(30, height / 2 - gamePanel.getHeight() / 2);
         this.add(gamePanel);
-        this.controller = new GameController(gamePanel, mapMatrix);
+        this.controller = new GameController(this,gamePanel, mapMatrix);
 
         this.restartBtn = FrameUtil.createButton(this, "Restart", new Point(gamePanel.getWidth() + 80, 120), 80, 50);
         this.loadBtn = FrameUtil.createButton(this, "Load", new Point(gamePanel.getWidth() + 80, 210), 80, 50);
@@ -50,8 +50,19 @@ public class GameFrame extends JFrame {
             LevelFrame.getFrameController().returnLevelFrame(this);
             gamePanel.requestFocusInWindow();//enable key listener
         });
+
+        initGameLoop();
+
         this.setLocationRelativeTo(null);
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
     }
+    private void initGameLoop() {
+        new Timer(1000 / 60, e -> {
+            controller.checkwin();
+            controller.checklose();
+        }).start();
+    }
+
+
 
 }
