@@ -1,10 +1,13 @@
 package view.login;
 
+import util.FileUtil;
 import view.FrameUtil;
 import view.level.LevelFrame;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.IOException;
+import java.util.List;
 
 
 public class LoginFrame extends JFrame {
@@ -13,6 +16,7 @@ public class LoginFrame extends JFrame {
     private JButton submitBtn;
     private JButton resetBtn;
     private LevelFrame levelFrame;
+    FileUtil fileUtil=new FileUtil();
 
 
     public LoginFrame(int width, int height) {
@@ -30,12 +34,20 @@ public class LoginFrame extends JFrame {
         submitBtn.addActionListener(e -> {
             System.out.println("Username = " + username.getText());
             System.out.println("Password = " + password.getText());
-            if (this.levelFrame != null) {
-                this.levelFrame.setVisible(true);
-                this.setVisible(false);
-            }
-            //todo: check login info
 
+            //todo: check login info
+            String inputUsername=username.getText();
+            String inputPassword=password.getText();
+
+            if(validateLogin(inputUsername,inputPassword)){
+                JOptionPane.showMessageDialog(LoginFrame.this,"Login successful!");
+                if (this.levelFrame != null) {
+                    this.levelFrame.setVisible(true);
+                    this.setVisible(false);
+                }
+            }else{
+                JOptionPane.showMessageDialog(LoginFrame.this,"Invalid username or password");
+            }
         });
         resetBtn.addActionListener(e -> {
             username.setText("");
@@ -44,6 +56,25 @@ public class LoginFrame extends JFrame {
 
         this.setLocationRelativeTo(null);
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+    }
+
+    private boolean validateLogin(String username, String password) {
+        List<String> lines = fileUtil.readFileToList("data/users.csv");
+        for (int i = 0; i < lines.size(); i++) {
+            String name = lines.get(i).split(",")[0];
+            String key = lines.get(i).split(",")[1];
+            if (name.equals(username)) {
+                //找到匹配用户，检查密码
+                if (key.equals(password)) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        }
+        lines.add(username+','+password);
+        fileUtil.writeFileFromList("data/users.csv",lines);
+        return true;
     }
 
     public void setLevelFrame(LevelFrame levelFrame) {
