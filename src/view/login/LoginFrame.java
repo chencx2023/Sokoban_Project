@@ -8,6 +8,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 
 
 public class LoginFrame extends JFrame {
@@ -70,6 +71,9 @@ public class LoginFrame extends JFrame {
                 } else {
                     return false;
                 }
+            }
+            if(username.equals("")){
+                return false;
             }
         }
         lines.add(username+','+password);
