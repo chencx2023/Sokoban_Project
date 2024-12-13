@@ -1,5 +1,6 @@
 package view.login;
 
+import controller.FrameController;
 import util.FileUtil;
 import view.FrameUtil;
 import view.level.LevelFrame;
@@ -17,13 +18,15 @@ public class LoginFrame extends JFrame {
     private JButton submitBtn;
     private JButton resetBtn;
     private LevelFrame levelFrame;
+    private FrameController frameController;
     FileUtil fileUtil=new FileUtil();
 
 
-    public LoginFrame(int width, int height) {
+    public LoginFrame(int width, int height,FrameController frameController) {
         this.setTitle("Login Frame");
         this.setLayout(null);
         this.setSize(width, height);
+        this.frameController=frameController;
         JLabel userLabel = FrameUtil.createJLabel(this, new Point(50, 20), 70, 40, "username:");
         JLabel passLabel = FrameUtil.createJLabel(this, new Point(50, 80), 70, 40, "password:");
         username = FrameUtil.createJTextField(this, new Point(120, 20), 120, 40);
@@ -42,6 +45,7 @@ public class LoginFrame extends JFrame {
 
             if(validateLogin(inputUsername,inputPassword)){
                 JOptionPane.showMessageDialog(LoginFrame.this,"Login successful!");
+                frameController.setUser(inputUsername);
                 if (this.levelFrame != null) {
                     this.levelFrame.setVisible(true);
                     this.setVisible(false);
@@ -54,7 +58,7 @@ public class LoginFrame extends JFrame {
             username.setText("");
             password.setText("");
         });
-
+        this.frameController.setLoginFrame(this);
         this.setLocationRelativeTo(null);
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
     }

@@ -4,18 +4,26 @@ import model.MapMatrix;
 import util.FileUtil;
 import view.game.GameFrame;
 import view.level.LevelFrame;
+import view.login.LoginFrame;
+import view.login.LoginSelectionFrame;
 
 import javax.swing.*;
 import java.util.List;
 
 public class FrameController {
     private LevelFrame levelFrame;
+    private LoginFrame loginFrame;
+    private LoginSelectionFrame loginSelectionFrame;
+    public GameFrame gameFrame;
+    private String user;
     FileUtil fileUtil = new FileUtil();
+
+    public String getUser() {return user;}
+    public void setUser(String user) {this.user = user;}
 
     public LevelFrame getLevelFrame() {
         return levelFrame;
     }
-
     public void setLevelFrame(LevelFrame levelFrame) {
         this.levelFrame = levelFrame;
     }
@@ -51,4 +59,17 @@ public class FrameController {
         GameFrame gameFrame=new GameFrame(600, 450, mapMatrix);
         gameFrame.setVisible(true);
     }
+    public void setLoginFrame(LoginFrame loginFrame) {
+        this.loginFrame=loginFrame;
+    }
+    public void setLoginSelectionFrame(LoginSelectionFrame loginSelectionFrame) {
+        this.loginSelectionFrame = loginSelectionFrame;
+    }
+    public void setGameFrame(GameFrame gameFrame){
+        this.gameFrame=gameFrame;
+    }
+    public GameFrame getGameFrame(){
+        return gameFrame;
+    }
 }
+

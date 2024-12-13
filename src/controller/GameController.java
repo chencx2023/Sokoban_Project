@@ -190,5 +190,9 @@ public class GameController {
         }
     }
 
+    public void saveGame(){
+        String username=frame.getFrameController().getUser();
+        
+    }
     //todo: add other methods such as loadGame, saveGame...
 }
