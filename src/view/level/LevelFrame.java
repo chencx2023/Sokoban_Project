@@ -9,10 +9,10 @@ import javax.swing.*;
 import java.awt.*;
 
 public class LevelFrame extends JFrame {
-    private static FrameController frameController=new FrameController();
+    private FrameController frameController=new FrameController();
     //一个LevelFrame只绑定一个FrameController,所以设置成静态的
 
-    public LevelFrame(int width, int height) {
+    public LevelFrame(int width, int height,FrameController frameController) {
         this.setTitle("Level");
         this.setLayout(null);
         this.setSize(width, height);
@@ -30,7 +30,7 @@ public class LevelFrame extends JFrame {
                     {1, 0, 2, 10, 0, 1},
                     {1, 1, 1, 1, 1, 1},
             });
-            GameFrame gameFrame = new GameFrame(600, 450, mapMatrix);
+            GameFrame gameFrame = new GameFrame(600, 550, mapMatrix,frameController);
             this.setVisible(false);
             gameFrame.setVisible(true);
         });
@@ -44,7 +44,7 @@ public class LevelFrame extends JFrame {
                     {1, 0, 0, 0, 0, 0, 1},
                     {1, 1, 1, 1, 1, 1, 1},
             });
-            GameFrame gameFrame = new GameFrame(600, 450, mapMatrix);
+            GameFrame gameFrame = new GameFrame(600, 550, mapMatrix,frameController);
             this.setVisible(false);
             gameFrame.setVisible(true);
         });
@@ -59,7 +59,7 @@ public class LevelFrame extends JFrame {
                     {1, 0, 0, 0, 0, 0, 1},
                     {1, 1, 1, 1, 1, 1, 1},
             });
-            GameFrame gameFrame = new GameFrame(600, 450, mapMatrix);
+            GameFrame gameFrame = new GameFrame(600, 550, mapMatrix,frameController);
             this.setVisible(false);
             gameFrame.setVisible(true);
         });
@@ -74,7 +74,7 @@ public class LevelFrame extends JFrame {
                     {1, 1, 0, 2, 0, 1, 1},
                     {0, 1, 1, 1, 1, 1, 0},
             });
-            GameFrame gameFrame = new GameFrame(600, 450, mapMatrix);
+            GameFrame gameFrame = new GameFrame(600, 550, mapMatrix,frameController);
             this.setVisible(false);
             gameFrame.setVisible(true);
         });
@@ -88,7 +88,7 @@ public class LevelFrame extends JFrame {
                     {1, 0, 0, 1, 0, 2, 0, 1},
                     {1, 1, 1, 1, 1, 1, 1, 1},
             });
-            GameFrame gameFrame = new GameFrame(600, 450, mapMatrix);
+            GameFrame gameFrame = new GameFrame(600, 550, mapMatrix,frameController);
             this.setVisible(false);
             gameFrame.setVisible(true);
         });
@@ -99,6 +99,6 @@ public class LevelFrame extends JFrame {
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
     }
 
-    public static FrameController getFrameController() { return frameController; }
+    public FrameController getFrameController() { return frameController; }
 
 }

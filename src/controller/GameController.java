@@ -2,6 +2,8 @@ package controller;
 
 import model.Direction;
 import model.MapMatrix;
+import model.User;
+import util.FileUtil;
 import view.game.GamePanel;
 import view.game.GridComponent;
 import view.game.Hero;
@@ -13,6 +15,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * It is a bridge to combine GamePanel(view) and MapMatrix(model) in one game.
@@ -24,6 +28,7 @@ public class GameController {
     private final GameFrame frame;
     private boolean haswon = false;
     private boolean haslosed = false;
+    FileUtil fileUtil=new FileUtil();
 
 
     public GameController(GameFrame frame, GamePanel view, MapMatrix model) {
@@ -190,9 +195,80 @@ public class GameController {
         }
     }
 
-    public void saveGame(){
-        String username=frame.getFrameController().getUser();
-        
+    public void saveGame() {
+        // 获取用户名
+        String username = frame.getFrameController().getUser();
+
+        // 检查 username 是否为 null 或空字符串
+        if (username == null || username.trim().isEmpty()) {
+            System.out.println("Username is null or empty, cannot save game.");
+            JOptionPane.showMessageDialog(frame, "Username is null or empty, cannot save game.");
+            return;
+        }
+
+        // 生成文件路径
+        String path = String.format("resource/%s/level1.txt", username);
+
+        // 确保目录存在
+        File directory = new File(path).getParentFile();
+        if (!directory.exists()) {
+            boolean created = directory.mkdirs();
+            if (!created) {
+                System.out.println("Failed to create directory: " + directory.getPath());
+                JOptionPane.showMessageDialog(frame, "Failed to create directory for saving game.");
+                return;
+            }
+        }
+
+        // 获取游戏数据
+        int[][] map = model.getMatrix();
+        List<String> lines = new ArrayList<>();
+        for (int i = 0; i < map.length; i++) {
+            StringBuilder line = new StringBuilder();
+            for (int j = 0; j < map[i].length; j++) {
+                line.append(map[i][j]);
+                if (j < map[i].length - 1) {
+                    line.append(",");
+                }
+            }
+            lines.add(line.toString());
+        }
+
+        // 写入文件
+        try {
+            fileUtil.writeFileFromList(path, lines);
+            System.out.println("Game saved to file: " + path);
+            JOptionPane.showMessageDialog(frame, "Game saved successfully!");
+        } catch (Exception e) {
+            System.out.println("Failed to save game: " + e.getMessage());
+            JOptionPane.showMessageDialog(frame, "Failed to save game: " + e.getMessage());
+        }
     }
+
+//    public void saveGame(){
+//        String username=frame.getFrameController().getUser();
+//        String path=String.format("resource/%s/level1.txt",username);
+//
+//        //what to store: mapMatrix & steps
+//       //MapMatrix model-->array-->String-->file
+//        int[][] map= model.getMatrix();
+//        List<String> lines=new ArrayList<>();
+//        for (int i = 0; i < map.length; i++) {
+//            StringBuilder line=new StringBuilder();
+//            for (int j = 0; j < map[i].length; j++) {
+//                line.append(map[i][j]);
+//                if (j < map[i].length - 1) {
+//                line.append(",");
+//                }
+//            }
+//            lines.add(line.toString());
+//        }
+//        try {
+//            fileUtil.writeFileFromList(path, lines);
+//            System.out.println("Game saved to file: " + path);
+//        } catch (Exception e) {
+//            System.out.println("Failed to save game: " + e.getMessage());
+//        }
+//    }
     //todo: add other methods such as loadGame, saveGame...
 }

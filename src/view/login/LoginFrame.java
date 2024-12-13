@@ -43,6 +43,8 @@ public class LoginFrame extends JFrame {
             String inputUsername=username.getText();
             String inputPassword=password.getText();
 
+            System.out.println("LoginFrame: Username = " + inputUsername); // 打印用户名（调试）
+
             if(validateLogin(inputUsername,inputPassword)){
                 JOptionPane.showMessageDialog(LoginFrame.this,"Login successful!");
                 frameController.setUser(inputUsername);

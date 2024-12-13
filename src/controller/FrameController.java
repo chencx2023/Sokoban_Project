@@ -8,6 +8,7 @@ import view.login.LoginFrame;
 import view.login.LoginSelectionFrame;
 
 import javax.swing.*;
+import java.io.File;
 import java.util.List;
 
 public class FrameController {
@@ -19,7 +20,34 @@ public class FrameController {
     FileUtil fileUtil = new FileUtil();
 
     public String getUser() {return user;}
-    public void setUser(String user) {this.user = user;}
+    public void setUser(String user) {
+
+        System.out.println("FrameController: Setting username = " + user); // 打印用户名（调试）
+
+        this.user = user;
+        createUserDirectory(user); // 设置用户时自动创建目录
+    }
+
+    private void createUserDirectory(String user) {
+        if (user.equals("")) {
+            System.out.println("Username is empty, directory not created.");
+            return; // 如果 username 为空，直接返回，不创建目录
+        }
+        String path = String.format("resource/%s", user);
+        File directory = new File(path);  //创建File对象
+        if(!directory.exists()){
+            boolean created = directory.mkdirs();
+            if(created){
+                System.out.println("User directory created:"+path);
+            }else{
+                System.out.println("Failed to create user directory: " + path);
+            }
+        }else{
+            System.out.println("User directory already exists: " + path);
+        }
+
+
+    }
 
     public LevelFrame getLevelFrame() {
         return levelFrame;
@@ -56,7 +84,7 @@ public class FrameController {
         }
         //turn array to mapMatrix model
         MapMatrix mapMatrix=new MapMatrix(map);
-        GameFrame gameFrame=new GameFrame(600, 450, mapMatrix);
+        GameFrame gameFrame=new GameFrame(600, 450, mapMatrix,this);
         gameFrame.setVisible(true);
     }
     public void setLoginFrame(LoginFrame loginFrame) {
