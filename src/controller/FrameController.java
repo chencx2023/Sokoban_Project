@@ -17,6 +17,7 @@ public class FrameController {
     private LoginSelectionFrame loginSelectionFrame;
     public GameFrame gameFrame;
     private String user;
+    private int level;
     FileUtil fileUtil = new FileUtil();
 
     public String getUser() {return user;}
@@ -27,6 +28,10 @@ public class FrameController {
         this.user = user;
         createUserDirectory(user); // 设置用户时自动创建目录
     }
+    public int getLevel() {return level;}
+
+    public void setLevel(int level) {this.level = level;}
+
 
     private void createUserDirectory(String user) {
         if (user.equals("")) {
@@ -73,10 +78,10 @@ public class FrameController {
         }
 
         //turn String to array
-        int[][] map = new int[lines.size()][];
-        for (int i = 0; i < lines.size(); i++) {
+        int[][] map = new int[lines.size()-1][];
+        for (int i = 0; i < lines.size()-1; i++) {
             //todo: identify invalid maps
-            String[] elements = lines.get(i).split(" ");
+            String[] elements = lines.get(i).split(",");
             map[i] = new int[elements.length];
             for (int j = 0; j < map[i].length; j++) {
                 map[i][j] = Integer.parseInt(elements[j]);
@@ -84,7 +89,8 @@ public class FrameController {
         }
         //turn array to mapMatrix model
         MapMatrix mapMatrix=new MapMatrix(map);
-        GameFrame gameFrame=new GameFrame(600, 450, mapMatrix,this);
+        GameFrame gameFrame=new GameFrame(600, 550, mapMatrix,this);
+        gameFrame.getGamePanel().setSteps(Integer.parseInt(lines.get(lines.size()-1)));
         gameFrame.setVisible(true);
     }
     public void setLoginFrame(LoginFrame loginFrame) {

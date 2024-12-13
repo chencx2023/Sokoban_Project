@@ -35,6 +35,9 @@ public class GamePanel extends ListenerPanel {
 
     }
 
+    public int getSteps() {return steps;}
+    public void setSteps(int steps) {this.steps = steps;}
+
     public void initialGame() {
         this.steps = 0;
         for (int i = 0; i < grids.length; i++) {

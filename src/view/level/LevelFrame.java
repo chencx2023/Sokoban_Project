@@ -23,6 +23,7 @@ public class LevelFrame extends JFrame {
         JButton level5 = FrameUtil.createButton(this, "Level5", new Point(510, height / 2 - 50), 100, 100);
 
         level1.addActionListener(l->{
+            frameController.setLevel(1);
             MapMatrix mapMatrix = new MapMatrix(new int[][]{
                     {1, 1, 1, 1, 1, 1},
                     {1, 20, 0, 0, 0, 1},
@@ -36,6 +37,7 @@ public class LevelFrame extends JFrame {
         });
 
         level2.addActionListener(l->{
+            frameController.setLevel(2);
             MapMatrix mapMatrix = new MapMatrix(new int[][]{
                     {1, 1, 1, 1, 1, 1, 0},
                     {1, 20, 0, 0, 0, 1, 1},
@@ -50,6 +52,7 @@ public class LevelFrame extends JFrame {
         });
 
         level3.addActionListener(l->{
+            frameController.setLevel(3);
             MapMatrix mapMatrix = new MapMatrix(new int[][]{
                     {0, 0, 1, 1, 1, 1, 0},
                     {1, 1, 1, 0, 0, 1, 0},
@@ -65,6 +68,7 @@ public class LevelFrame extends JFrame {
         });
 
         level4.addActionListener(l->{
+            frameController.setLevel(4);
             MapMatrix mapMatrix = new MapMatrix(new int[][]{
                     {0, 1, 1, 1, 1, 1, 0},
                     {1, 1, 20, 0, 0, 1, 1},
@@ -80,6 +84,7 @@ public class LevelFrame extends JFrame {
         });
 
         level5.addActionListener(l->{
+            frameController.setLevel(5);
             MapMatrix mapMatrix = new MapMatrix(new int[][]{
                     {1, 1, 1, 1, 1, 1, 0, 0},
                     {1, 0, 0, 0, 0, 1, 1, 1},

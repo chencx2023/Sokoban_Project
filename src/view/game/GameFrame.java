@@ -46,8 +46,8 @@ public class GameFrame extends JFrame {
 
         });
         this.loadBtn.addActionListener(e -> {
-            String path = JOptionPane.showInputDialog(this, "Input path:");
-//            String path=String.format("resource/%s/game1.txt",user.getname());
+            //String path = JOptionPane.showInputDialog(this, "Input path:");
+            String path=String.format("resource/%s/level%d.txt",frameController.getUser(),frameController.getLevel());
 
             // 获取 LevelFrame 的实例
             LevelFrame levelFrame = frameController.getLevelFrame();
@@ -89,5 +89,6 @@ public class GameFrame extends JFrame {
     }
 
     public FrameController getFrameController() {return frameController;}
+    public GamePanel getGamePanel() {return gamePanel;}
 
 }

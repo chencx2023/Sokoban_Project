@@ -198,6 +198,7 @@ public class GameController {
     public void saveGame() {
         // 获取用户名
         String username = frame.getFrameController().getUser();
+        int level= frame.getFrameController().getLevel();
 
         // 检查 username 是否为 null 或空字符串
         if (username == null || username.trim().isEmpty()) {
@@ -207,7 +208,7 @@ public class GameController {
         }
 
         // 生成文件路径
-        String path = String.format("resource/%s/level1.txt", username);
+        String path = String.format("resource/%s/level%d.txt", username,level);
 
         // 确保目录存在
         File directory = new File(path).getParentFile();
@@ -219,7 +220,6 @@ public class GameController {
                 return;
             }
         }
-
         // 获取游戏数据
         int[][] map = model.getMatrix();
         List<String> lines = new ArrayList<>();
@@ -233,6 +233,9 @@ public class GameController {
             }
             lines.add(line.toString());
         }
+        //保存Steps
+        Integer steps=view.getSteps();
+        lines.add(steps.toString());
 
         // 写入文件
         try {
@@ -245,30 +248,5 @@ public class GameController {
         }
     }
 
-//    public void saveGame(){
-//        String username=frame.getFrameController().getUser();
-//        String path=String.format("resource/%s/level1.txt",username);
-//
-//        //what to store: mapMatrix & steps
-//       //MapMatrix model-->array-->String-->file
-//        int[][] map= model.getMatrix();
-//        List<String> lines=new ArrayList<>();
-//        for (int i = 0; i < map.length; i++) {
-//            StringBuilder line=new StringBuilder();
-//            for (int j = 0; j < map[i].length; j++) {
-//                line.append(map[i][j]);
-//                if (j < map[i].length - 1) {
-//                line.append(",");
-//                }
-//            }
-//            lines.add(line.toString());
-//        }
-//        try {
-//            fileUtil.writeFileFromList(path, lines);
-//            System.out.println("Game saved to file: " + path);
-//        } catch (Exception e) {
-//            System.out.println("Failed to save game: " + e.getMessage());
-//        }
-//    }
     //todo: add other methods such as loadGame, saveGame...
 }
