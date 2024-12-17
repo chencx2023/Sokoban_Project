@@ -12,6 +12,8 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 public class FrameController {
@@ -78,10 +80,54 @@ public class FrameController {
             System.out.println(line);
         }
 
+        //ToDo:identify invalid maps
+        // 检查文件格式
+        if (lines.size() < 3) {
+            System.out.println("Invalid save file: Not enough lines.");
+            JOptionPane.showMessageDialog(null, "Invalid save file: Not enough lines.");
+            return;
+        }
+
+        // 检查倒数第二行是否为步数
+        String lastLine = lines.get(lines.size() - 2);
+        if (!lastLine.matches("\\d+")) {
+            System.out.println("Invalid save file: Last line is not a valid step count.");
+            JOptionPane.showMessageDialog(null, "Invalid save file: Last line is not a valid step count.");
+            return;
+        }
+
+        // 检查最后一行是否为哈希值
+        String savedHash = lines.get(lines.size() - 1);
+        lines.remove(lines.size() - 1); // 移除哈希值
+
+        // 重新计算哈希值
+        try {
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
+            for (String line : lines) {
+                md.update(line.getBytes());
+            }
+            byte[] hash = md.digest();
+
+            // 将哈希值转换为字符串
+            StringBuilder hashString = new StringBuilder();
+            for (byte b : hash) {
+                hashString.append(String.format("%02x", b));
+            }
+
+            // 比较哈希值
+            if (!hashString.toString().equals(savedHash)) {
+                System.out.println("Fail to load: File has been modified.");
+                JOptionPane.showMessageDialog(null, "Fail to load: File has been modified.");
+                return;
+            }
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+
+
         //turn String to array
         int[][] map = new int[lines.size()-1][];
         for (int i = 0; i < lines.size()-1; i++) {
-            //todo: identify invalid maps
             String[] elements = lines.get(i).split(",");
             map[i] = new int[elements.length];
             for (int j = 0; j < map[i].length; j++) {
@@ -94,6 +140,7 @@ public class FrameController {
         gameFrame.getGamePanel().setSteps(Integer.parseInt(lines.get(lines.size()-1)));
         gameFrame.updateStepLabel();
         gameFrame.setVisible(true);
+        gameFrame.getGamePanel().requestFocusInWindow();
     }
 
     public int[][] loadmatrix(String path) {
@@ -147,6 +194,8 @@ public class FrameController {
     public GameFrame getGameFrame(){
         return gameFrame;
     }
+
+
     public void loadGame(String path, JFrame frame) {
         frame.dispose();
         loadGame(path);
@@ -154,7 +203,7 @@ public class FrameController {
 
     public void loadGame(String path) {
         MapMatrix mapMatrix=new MapMatrix(loadmatrix(path));
-        GameFrame gameFrame=new GameFrame(600, 450, mapMatrix,this);
+        GameFrame gameFrame=new GameFrame(600, 550, mapMatrix,this);
         gameFrame.setVisible(true);
     }
 

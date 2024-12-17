@@ -16,15 +16,6 @@ public class GamePanel extends ListenerPanel {
 
     private GridComponent[][] grids;
     private MapMatrix model;
-
-    public JLabel getTrailLabel() {
-        return trailLabel;
-    }
-
-    public void setTrailLabel(JLabel trailLabel) {
-        this.trailLabel = trailLabel;
-    }
-
     private GameController controller;
     private JLabel stepLabel;
     private JLabel trailLabel;
@@ -44,6 +35,13 @@ public class GamePanel extends ListenerPanel {
         this.model = model;
         this.grids = new GridComponent[model.getHeight()][model.getWidth()];
         initialGame();
+    }
+    public JLabel getTrailLabel() {
+        return trailLabel;
+    }
+
+    public void setTrailLabel(JLabel trailLabel) {
+        this.trailLabel = trailLabel;
     }
 
     public void initialGame() {
@@ -133,10 +131,11 @@ public class GamePanel extends ListenerPanel {
     public GridComponent getGridComponent(int row, int col) {
         return grids[row][col];
     }
+
     public void restartGame(){
         //ToDo: reset step & GridComponents
         //reset steps
-        steps=0;
+        this.setSteps(0);
         this.stepLabel.setText(String.format("Step: %d", this.steps));
         //reset gridComponents
         for (int i = 0; i < grids.length; i++) {
@@ -162,7 +161,6 @@ public class GamePanel extends ListenerPanel {
         }
         trail++;
         this.afterRestart();
-//为什么只能restart一次？？
     }
 
     public void ResetGamePanel(){
@@ -193,7 +191,5 @@ public class GamePanel extends ListenerPanel {
     public void afterRestart() {
         this.trailLabel.setText(String.format("Trail: %d", this.trail));
     }
-
-
 
 }

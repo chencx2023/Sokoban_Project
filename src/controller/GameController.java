@@ -1,5 +1,7 @@
 package controller;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,7 +34,7 @@ public class GameController {
     private final GamePanel view;//gamepanel是final的
     private final MapMatrix model;
     private final GameFrame frame;
-    private final LevelFrame levelFrame = new LevelFrame(650,200);
+//    private final LevelFrame levelFrame = new LevelFrame(650,200);
     private final List<int[][]> maps = new ArrayList<>();
     FileUtil fileUtil=new FileUtil();
 
@@ -181,10 +183,7 @@ public class GameController {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-
-
         }
-
     }
 
     public void checklose(){    //只考虑箱子是否无法移动的情况
@@ -334,6 +333,7 @@ public class GameController {
             }
         }
     }
+
     public void saveGame() {
         // 获取用户名和关卡名，用于生成文件名
         String username = frame.getFrameController().getUser();
@@ -376,6 +376,29 @@ public class GameController {
         Integer steps=view.getSteps();
         lines.add(steps.toString());
 
+        // 计算文件的哈希值
+        try {
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
+            for (String line : lines) {
+                md.update(line.getBytes());
+            }
+            byte[] hash = md.digest();
+
+            // 将哈希值转换为字符串
+            StringBuilder hashString = new StringBuilder();
+            for (byte b : hash) {
+                hashString.append(String.format("%02x", b));
+            }
+
+            // 将哈希值添加到文件末尾
+            lines.add(hashString.toString());
+
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(frame, "Failed to calculate hash for save file.");
+            return;
+        }
+
         // 写入文件
         try {
             fileUtil.writeFileFromList(path, lines);
@@ -386,7 +409,6 @@ public class GameController {
             JOptionPane.showMessageDialog(frame, "Failed to save game: " + e.getMessage());
         }
     }
-
 
     //todo: add other methods such as loadGame, saveGame...
 }

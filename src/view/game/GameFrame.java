@@ -54,15 +54,18 @@ public class GameFrame extends JFrame {
         });
         this.loadBtn.addActionListener(e -> {
             //String path = JOptionPane.showInputDialog(this, "Input path:");
-            String path=String.format("resource/%s/level%d.txt",frameController.getUser(),frameController.getLevel());
+            String user=frameController.getUser();
 
-//            //获取 LevelFrame 的实例
-//            LevelFrame levelFrame = frameController.getLevelFrame();
-//            levelFrame.getFrameController().loadGame(path,this);
+            if (user == null || user.trim().isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Guest Mode user cannot load game.");
+                return; // 阻止加载游戏
+            }
+
+            String path=String.format("resource/%s/level%d.txt",user,frameController.getLevel());
+
             frameController.loadGame1(path, this);
 
             System.out.println(path);
-//          gamePanel.requestFocusInWindow();//enable key listener
         });
 
         //todo: add other button here
