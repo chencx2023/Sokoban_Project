@@ -9,17 +9,18 @@ public class Box extends JComponent {
     private final int value = 10;
     private int row;
     private int col;
+    private Image boxImage;
 
     public Box(int width, int height, int row, int col) {
         this.col = col;
         this.row = row;
         this.setSize(width, height);
         this.setLocation(5, 5);
+        boxImage=new ImageIcon("resource/pictures/box.png").getImage();
     }
 
     public void paintComponent(Graphics g) {
-        g.setColor(Color.ORANGE);
-        g.fillRect(0, 0, getWidth(), getHeight());
+        g.drawImage(boxImage,0,0,getWidth(),getHeight(),null);
         Border border = BorderFactory.createLineBorder(Color.black, 1);
         this.setBorder(border);
     }

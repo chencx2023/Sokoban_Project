@@ -13,11 +13,19 @@ public class GridComponent extends JComponent {
     private Box box;
     static Color color = new Color(246, 246, 229);
 
+    private Image wallImage;
+    private Image goalImage;
+    private Image groundImage;
+
     public GridComponent(int row, int col, int id, int gridSize) {
         this.setSize(gridSize, gridSize);
         this.row = row;
         this.col = col;
         this.id = id;
+
+        wallImage=new ImageIcon("resource/pictures/wall.png").getImage();
+        groundImage=new ImageIcon("resource/pictures/ground.png").getImage();
+        goalImage=new ImageIcon("resource/pictures/targetPoint.png").getImage();
     }
 
     @Override
@@ -26,27 +34,18 @@ public class GridComponent extends JComponent {
         Color borderColor = color;
         switch (id % 10) {
             case 1:
-                g.setColor(Color.LIGHT_GRAY);
-                g.fillRect(0, 0, getWidth(), getHeight());
-                borderColor = Color.DARK_GRAY;
+                g.drawImage(wallImage,0,0,getWidth(),getHeight(),null);
                 break;
             case 0:
-                g.setColor(Color.WHITE);
-                g.fillRect(0, 0, getWidth(), getHeight());
+                g.drawImage(groundImage,0,0,getWidth(),getHeight(),null);
                 break;
             case 2:
-                g.setColor(Color.WHITE);
-                g.fillRect(0, 0, getWidth(), getHeight());
-                g.setColor(Color.GREEN);
-                int[] xPoints = {getWidth() / 2, getWidth(), getWidth() / 2, 0};
-                int[] yPoints = {0, getHeight() / 2, getHeight(), getHeight() / 2};
-                g.fillPolygon(xPoints, yPoints, 4);
-                g.setColor(Color.BLACK);
-                g.drawPolygon(xPoints, yPoints, 4);
+                g.drawImage(goalImage,0,0,getWidth(),getHeight(),null);
                 break;
         }
         Border border = BorderFactory.createLineBorder(borderColor, 1);
         this.setBorder(border);
+
     }
 
     public int getRow() {

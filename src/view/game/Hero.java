@@ -6,6 +6,7 @@ import java.awt.*;
 public class Hero extends JComponent {
     private int row;
     private int col;
+    private Image heroImage;
 
     private final int value = 20;
     private static Color color = new Color(87, 171, 220);
@@ -15,13 +16,11 @@ public class Hero extends JComponent {
         this.col = col;
         this.setSize(width, height);
         this.setLocation(8, 8);
+        heroImage=new ImageIcon("resource/pictures/hero.png").getImage();
     }
 
     public void paintComponent(Graphics g) {
-        g.setColor(Color.BLACK);
-        g.fillOval(0, 0, getWidth(), getHeight());
-        g.setColor(color);
-        g.fillOval(1,1,getWidth()-2,getHeight()-2);
+        g.drawImage(heroImage,0,0,getWidth(),getHeight(),null);
     }
 
     public int getValue() {

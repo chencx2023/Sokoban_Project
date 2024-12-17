@@ -13,7 +13,6 @@ import java.awt.*;
  * The class contains a grids, which is the corresponding GUI view of the matrix variable in MapMatrix.
  */
 public class GamePanel extends ListenerPanel {
-
     private GridComponent[][] grids;
     private MapMatrix model;
     private GameController controller;
@@ -23,9 +22,7 @@ public class GamePanel extends ListenerPanel {
     private int steps;
     private int trail = 0;
     private final int GRID_SIZE = 50;
-
     private Hero hero;
-
 
     public GamePanel(MapMatrix model) {
         this.setVisible(true);
