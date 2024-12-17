@@ -19,8 +19,7 @@ package model;
  */
 public class MapMatrix {
     int[][] matrix;
-
-    private final int[][] initialMatrix; //used to restartGame
+    private final int[][] initialMatrix; //存储原始地图（设置成final)，用于restartGame
 
 
     public MapMatrix(int[][] matrix) {
@@ -37,6 +36,7 @@ public class MapMatrix {
         }
         return b;
     }
+
     public void resetMapMatrix(){
         this.matrix=copyArray(initialMatrix);
     }

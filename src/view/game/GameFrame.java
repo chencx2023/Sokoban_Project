@@ -49,23 +49,21 @@ public class GameFrame extends JFrame {
             //String path = JOptionPane.showInputDialog(this, "Input path:");
             String path=String.format("resource/%s/level%d.txt",frameController.getUser(),frameController.getLevel());
 
-            // 获取 LevelFrame 的实例
-            LevelFrame levelFrame = frameController.getLevelFrame();
-            levelFrame.getFrameController().loadGame(path,this);
+//            //获取 LevelFrame 的实例
+//            LevelFrame levelFrame = frameController.getLevelFrame();
+//            levelFrame.getFrameController().loadGame(path,this);
             frameController.loadGame(path, this);
 
-            //LevelFrame.getFrameController().loadGame(path,this);
             System.out.println(path);
 //          gamePanel.requestFocusInWindow();//enable key listener
         });
+
         //todo: add other button here
         this.returnBtn.addActionListener(e -> {
-
             // 获取 LevelFrame 的实例
             LevelFrame levelFrame = frameController.getLevelFrame();
             levelFrame.getFrameController().returnLevelFrame(this);
 
-           // LevelFrame.getFrameController().returnLevelFrame(this);
             gamePanel.requestFocusInWindow();//enable key listener
         });
 

@@ -196,14 +196,14 @@ public class GameController {
     }
 
     public void saveGame() {
-        // 获取用户名
+        // 获取用户名和关卡名，用于生成文件名
         String username = frame.getFrameController().getUser();
         int level= frame.getFrameController().getLevel();
 
-        // 检查 username 是否为 null 或空字符串
-        if (username == null || username.trim().isEmpty()) {
+        // 检查 username 是否为 null 或空字符串，即是否为游客
+        if (username == null || username.trim().isEmpty()) { //.trim().isEmpty()比.equals()更适合用户输入场景，能去掉两端空格后再判断
             System.out.println("Username is null or empty, cannot save game.");
-            JOptionPane.showMessageDialog(frame, "Username is null or empty, cannot save game.");
+            JOptionPane.showMessageDialog(frame, "Guest Mode user cannot save game.");
             return;
         }
 
@@ -213,14 +213,14 @@ public class GameController {
         // 确保目录存在
         File directory = new File(path).getParentFile();
         if (!directory.exists()) {
-            boolean created = directory.mkdirs();
+            boolean created = directory.mkdirs(); //创建父目录
             if (!created) {
                 System.out.println("Failed to create directory: " + directory.getPath());
                 JOptionPane.showMessageDialog(frame, "Failed to create directory for saving game.");
                 return;
             }
         }
-        // 获取游戏数据
+        //获取游戏数据
         int[][] map = model.getMatrix();
         List<String> lines = new ArrayList<>();
         for (int i = 0; i < map.length; i++) {
@@ -228,7 +228,7 @@ public class GameController {
             for (int j = 0; j < map[i].length; j++) {
                 line.append(map[i][j]);
                 if (j < map[i].length - 1) {
-                    line.append(",");
+                    line.append(","); //用逗号隔开
                 }
             }
             lines.add(line.toString());

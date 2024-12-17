@@ -13,6 +13,7 @@ public class LevelFrame extends JFrame {
     //一个LevelFrame只绑定一个FrameController,所以设置成静态的
 
     public LevelFrame(int width, int height,FrameController frameController) {
+        this.frameController=frameController;
         this.setTitle("Level");
         this.setLayout(null);
         this.setSize(width, height);
@@ -32,6 +33,7 @@ public class LevelFrame extends JFrame {
                     {1, 1, 1, 1, 1, 1},
             });
             GameFrame gameFrame = new GameFrame(600, 550, mapMatrix,frameController);
+            frameController.setGameFrame(gameFrame);
             this.setVisible(false);
             gameFrame.setVisible(true);
         });
@@ -47,6 +49,7 @@ public class LevelFrame extends JFrame {
                     {1, 1, 1, 1, 1, 1, 1},
             });
             GameFrame gameFrame = new GameFrame(600, 550, mapMatrix,frameController);
+            frameController.setGameFrame(gameFrame);
             this.setVisible(false);
             gameFrame.setVisible(true);
         });
@@ -63,6 +66,7 @@ public class LevelFrame extends JFrame {
                     {1, 1, 1, 1, 1, 1, 1},
             });
             GameFrame gameFrame = new GameFrame(600, 550, mapMatrix,frameController);
+            frameController.setGameFrame(gameFrame);
             this.setVisible(false);
             gameFrame.setVisible(true);
         });
@@ -79,6 +83,7 @@ public class LevelFrame extends JFrame {
                     {0, 1, 1, 1, 1, 1, 0},
             });
             GameFrame gameFrame = new GameFrame(600, 550, mapMatrix,frameController);
+            frameController.setGameFrame(gameFrame);
             this.setVisible(false);
             gameFrame.setVisible(true);
         });
@@ -94,12 +99,12 @@ public class LevelFrame extends JFrame {
                     {1, 1, 1, 1, 1, 1, 1, 1},
             });
             GameFrame gameFrame = new GameFrame(600, 550, mapMatrix,frameController);
+            frameController.setGameFrame(gameFrame);
             this.setVisible(false);
             gameFrame.setVisible(true);
         });
         //todo: complete all level.
 
-        frameController.setLevelFrame(this); //把LevelFrame与FrameController进行绑定
         this.setLocationRelativeTo(null);
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
     }

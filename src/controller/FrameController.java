@@ -15,25 +15,25 @@ public class FrameController {
     private LevelFrame levelFrame;
     private LoginFrame loginFrame;
     private LoginSelectionFrame loginSelectionFrame;
-    public GameFrame gameFrame;
-    private String user;
+    private GameFrame gameFrame;
+    private String user; //保存用户名
     private int level;
     FileUtil fileUtil = new FileUtil();
 
     public String getUser() {return user;}
+
     public void setUser(String user) {
-
         System.out.println("FrameController: Setting username = " + user); // 打印用户名（调试）
-
         this.user = user;
         createUserDirectory(user); // 设置用户时自动创建目录
     }
-    public int getLevel() {return level;}
 
+    public int getLevel() {return level;}
     public void setLevel(int level) {this.level = level;}
 
 
     private void createUserDirectory(String user) {
+        //为新注册的用户创建目录
         if (user.equals("")) {
             System.out.println("Username is empty, directory not created.");
             return; // 如果 username 为空，直接返回，不创建目录
@@ -48,10 +48,9 @@ public class FrameController {
                 System.out.println("Failed to create user directory: " + path);
             }
         }else{
+            // 已经注册过，不创建目录
             System.out.println("User directory already exists: " + path);
         }
-
-
     }
 
     public LevelFrame getLevelFrame() {
@@ -93,6 +92,7 @@ public class FrameController {
         gameFrame.getGamePanel().setSteps(Integer.parseInt(lines.get(lines.size()-1)));
         gameFrame.setVisible(true);
     }
+
     public void setLoginFrame(LoginFrame loginFrame) {
         this.loginFrame=loginFrame;
     }
@@ -104,6 +104,26 @@ public class FrameController {
     }
     public GameFrame getGameFrame(){
         return gameFrame;
+    }
+
+    public void showLoginSelectionFrame() {
+        loginSelectionFrame.setVisible(true);
+        loginFrame.setVisible(false);
+        levelFrame.setVisible(false);
+    }
+
+    // 显示 LoginFrame
+    public void showLoginFrame() {
+        loginSelectionFrame.setVisible(false);
+        loginFrame.setVisible(true);
+        levelFrame.setVisible(false);
+    }
+
+    // 显示 LevelFrame
+    public void showLevelFrame() {
+        loginSelectionFrame.setVisible(false);
+        loginFrame.setVisible(false);
+        levelFrame.setVisible(true);
     }
 }
 

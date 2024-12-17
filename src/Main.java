@@ -8,16 +8,19 @@ import javax.swing.*;
 public class Main {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
+            //创建FrameController实例
             FrameController frameController=new FrameController();
-            LoginSelectionFrame loginSelectionFrame=new LoginSelectionFrame(280,280,frameController);
-            loginSelectionFrame.setVisible(true);
+
+            LoginSelectionFrame loginSelectionFrame=new LoginSelectionFrame(350,280,frameController);
             LoginFrame loginFrame = new LoginFrame(280,280,frameController);
-            loginFrame.setVisible(false);
-            loginSelectionFrame.setLoginFrame(loginFrame);
             LevelFrame levelFrame = new LevelFrame(650,200,frameController);
-            levelFrame.setVisible(false);
-            loginSelectionFrame.setLevelFrame(levelFrame);
-            loginFrame.setLevelFrame(levelFrame);
+
+            //将Frame和FrameController互相绑定
+            frameController.setLoginSelectionFrame(loginSelectionFrame);
+            frameController.setLoginFrame(loginFrame);
+            frameController.setLevelFrame(levelFrame);
+
+            frameController.showLoginSelectionFrame();
         });
     }
 }

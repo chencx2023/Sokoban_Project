@@ -104,7 +104,6 @@ public class GamePanel extends ListenerPanel {
         this.stepLabel = stepLabel;
     }
 
-
     public void setController(GameController controller) {
         this.controller = controller;
     }
@@ -115,8 +114,8 @@ public class GamePanel extends ListenerPanel {
     public void restartGame(){
         //ToDo: reset step & GridComponents
         //reset steps
-        steps=0;
-        this.stepLabel.setText(String.format("Step: %d", this.steps));
+        this.setSteps(0);
+        this.stepLabel.setText(String.format("Step: %d", this.getSteps()));
         //reset gridComponents
         for (int i = 0; i < grids.length; i++) {
             for (int j = 0; j < grids[i].length; j++) {

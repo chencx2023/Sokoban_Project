@@ -17,16 +17,15 @@ public class LoginFrame extends JFrame {
     private JTextField password;
     private JButton submitBtn;
     private JButton resetBtn;
-    private LevelFrame levelFrame;
     private FrameController frameController;
     FileUtil fileUtil=new FileUtil();
 
 
     public LoginFrame(int width, int height,FrameController frameController) {
+        this.frameController=frameController;
         this.setTitle("Login Frame");
         this.setLayout(null);
         this.setSize(width, height);
-        this.frameController=frameController;
         JLabel userLabel = FrameUtil.createJLabel(this, new Point(50, 20), 70, 40, "username:");
         JLabel passLabel = FrameUtil.createJLabel(this, new Point(50, 80), 70, 40, "password:");
         username = FrameUtil.createJTextField(this, new Point(120, 20), 120, 40);
@@ -48,10 +47,7 @@ public class LoginFrame extends JFrame {
             if(validateLogin(inputUsername,inputPassword)){
                 JOptionPane.showMessageDialog(LoginFrame.this,"Login successful!");
                 frameController.setUser(inputUsername);
-                if (this.levelFrame != null) {
-                    this.levelFrame.setVisible(true);
-                    this.setVisible(false);
-                }
+                frameController.showLevelFrame();
             }else{
                 JOptionPane.showMessageDialog(LoginFrame.this,"Invalid username or password");
             }
@@ -66,8 +62,13 @@ public class LoginFrame extends JFrame {
     }
 
     private boolean validateLogin(String username, String password) {
+        // 检查用户名是否为空
+        if(username.equals("")){
+            return false;
+        }
         List<String> lines = fileUtil.readFileToList("data/users.csv");
         for (int i = 0; i < lines.size(); i++) {
+            //遍历user数据库的每一个用户
             String name = lines.get(i).split(",")[0];
             String key = lines.get(i).split(",")[1];
             if (name.equals(username)) {
@@ -78,16 +79,10 @@ public class LoginFrame extends JFrame {
                     return false;
                 }
             }
-            if(username.equals("")){
-                return false;
-            }
         }
+        //未找到匹配用户，为用户注册账号，将数据添加到user库中
         lines.add(username+','+password);
         fileUtil.writeFileFromList("data/users.csv",lines);
         return true;
-    }
-
-    public void setLevelFrame(LevelFrame levelFrame) {
-        this.levelFrame = levelFrame;
     }
 }
