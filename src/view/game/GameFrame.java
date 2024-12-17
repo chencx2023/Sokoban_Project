@@ -17,11 +17,15 @@ public class GameFrame extends JFrame {
     private JButton loadBtn;
     private JButton returnBtn;
     private JButton saveBtn;
+    private JButton undoBtn;
+
 
     private JLabel stepLabel;
+    private JLabel trailLabel;
     private GamePanel gamePanel;
 
     public GameFrame(int width, int height, MapMatrix mapMatrix,FrameController frameController) {
+        this.frameController = frameController;
         this.setTitle("2024 CS109 Project Demo");
         this.setLayout(null);
         this.setSize(width, height);
@@ -34,11 +38,14 @@ public class GameFrame extends JFrame {
         System.out.println("GameFrame: Username = " + frameController.getUser()); // 打印用户名（调试）
 
         this.restartBtn = FrameUtil.createButton(this, "Restart", new Point(gamePanel.getWidth() + 80, 120), 80, 50);
-        this.loadBtn = FrameUtil.createButton(this, "Load", new Point(gamePanel.getWidth() + 80, 210), 80, 50);
-        this.returnBtn = FrameUtil.createButton(this, "Return", new Point(gamePanel.getWidth() + 80, 300), 80, 50);
-        this.saveBtn = FrameUtil.createButton(this, "Save", new Point(gamePanel.getWidth() + 80, 390), 80, 50);
-        this.stepLabel = FrameUtil.createJLabel(this, "Steps:0", new Font("serif", Font.ITALIC, 22), new Point(gamePanel.getWidth() + 80, 70), 180, 50);
+        this.loadBtn = FrameUtil.createButton(this, "Load", new Point(gamePanel.getWidth() + 80, 190), 80, 50);
+        this.returnBtn = FrameUtil.createButton(this, "Return", new Point(gamePanel.getWidth() + 80, 260), 80, 50);
+        this.undoBtn = FrameUtil.createButton(this, "Undo", new Point(gamePanel.getWidth() + 80, 330), 80, 50);
+        this.saveBtn = FrameUtil.createButton(this, "Save", new Point(gamePanel.getWidth() + 80, 400), 80, 50);
+        this.stepLabel = FrameUtil.createJLabel(this, "Start", new Font("serif", Font.ITALIC, 22), new Point(gamePanel.getWidth() + 80, 70), 180, 50);
+        this.trailLabel = FrameUtil.createJLabel(this, "Trail", new Font("serif", Font.ITALIC, 22), new Point(gamePanel.getWidth() + 80, 20), 180, 50);
         gamePanel.setStepLabel(stepLabel);
+        gamePanel.setTrailLabel(trailLabel);
 
         this.restartBtn.addActionListener(e -> {
             controller.restartGame();
@@ -52,7 +59,7 @@ public class GameFrame extends JFrame {
 //            //获取 LevelFrame 的实例
 //            LevelFrame levelFrame = frameController.getLevelFrame();
 //            levelFrame.getFrameController().loadGame(path,this);
-            frameController.loadGame(path, this);
+            frameController.loadGame1(path, this);
 
             System.out.println(path);
 //          gamePanel.requestFocusInWindow();//enable key listener
@@ -62,8 +69,7 @@ public class GameFrame extends JFrame {
         this.returnBtn.addActionListener(e -> {
             // 获取 LevelFrame 的实例
             LevelFrame levelFrame = frameController.getLevelFrame();
-            levelFrame.getFrameController().returnLevelFrame(this);
-
+            LevelFrame.getFrameController().returnLevelFrame(this);
             gamePanel.requestFocusInWindow();//enable key listener
         });
 

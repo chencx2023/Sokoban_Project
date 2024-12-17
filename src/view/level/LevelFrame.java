@@ -1,19 +1,35 @@
 package view.level;
 
 import controller.FrameController;
+import controller.GameController;
 import model.MapMatrix;
 import view.FrameUtil;
 import view.game.GameFrame;
 
+
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class LevelFrame extends JFrame {
-    private FrameController frameController=new FrameController();
+    private static FrameController frameController=new FrameController();
     //一个LevelFrame只绑定一个FrameController,所以设置成静态的
+    public static final List<int[][]> levels = new ArrayList<>();
 
-    public LevelFrame(int width, int height,FrameController frameController) {
-        this.frameController=frameController;
+    public  List<int[][]> getLevels() {
+        return levels;
+    }
+
+    static {
+        levels.add(frameController.loadmatrix("resource/level1.txt"));
+        levels.add(frameController.loadmatrix("resource/level2.txt"));
+        levels.add(frameController.loadmatrix("resource/level3.txt"));
+        levels.add(frameController.loadmatrix("resource/level4.txt"));
+        levels.add(frameController.loadmatrix("resource/level5.txt"));
+    }
+    public LevelFrame(int width, int height) {
         this.setTitle("Level");
         this.setLayout(null);
         this.setSize(width, height);
@@ -24,91 +40,31 @@ public class LevelFrame extends JFrame {
         JButton level5 = FrameUtil.createButton(this, "Level5", new Point(510, height / 2 - 50), 100, 100);
 
         level1.addActionListener(l->{
-            frameController.setLevel(1);
-            MapMatrix mapMatrix = new MapMatrix(new int[][]{
-                    {1, 1, 1, 1, 1, 1},
-                    {1, 20, 0, 0, 0, 1},
-                    {1, 0, 0, 10, 2, 1},
-                    {1, 0, 2, 10, 0, 1},
-                    {1, 1, 1, 1, 1, 1},
-            });
-            GameFrame gameFrame = new GameFrame(600, 550, mapMatrix,frameController);
-            frameController.setGameFrame(gameFrame);
-            this.setVisible(false);
-            gameFrame.setVisible(true);
+            frameController.loadGame("resource/level1.txt");
         });
 
         level2.addActionListener(l->{
-            frameController.setLevel(2);
-            MapMatrix mapMatrix = new MapMatrix(new int[][]{
-                    {1, 1, 1, 1, 1, 1, 0},
-                    {1, 20, 0, 0, 0, 1, 1},
-                    {1, 0, 10, 10, 0, 0, 1},
-                    {1, 0, 1, 2, 0, 2, 1},
-                    {1, 0, 0, 0, 0, 0, 1},
-                    {1, 1, 1, 1, 1, 1, 1},
-            });
-            GameFrame gameFrame = new GameFrame(600, 550, mapMatrix,frameController);
-            frameController.setGameFrame(gameFrame);
-            this.setVisible(false);
-            gameFrame.setVisible(true);
+            frameController.loadGame("resource/level2.txt");
         });
 
         level3.addActionListener(l->{
-            frameController.setLevel(3);
-            MapMatrix mapMatrix = new MapMatrix(new int[][]{
-                    {0, 0, 1, 1, 1, 1, 0},
-                    {1, 1, 1, 0, 0, 1, 0},
-                    {1, 20, 0, 2, 10, 1, 1},
-                    {1, 0, 0, 0, 10, 0, 1},
-                    {1, 0, 1, 2, 0, 0, 1},
-                    {1, 0, 0, 0, 0, 0, 1},
-                    {1, 1, 1, 1, 1, 1, 1},
-            });
-            GameFrame gameFrame = new GameFrame(600, 550, mapMatrix,frameController);
-            frameController.setGameFrame(gameFrame);
-            this.setVisible(false);
-            gameFrame.setVisible(true);
+            frameController.loadGame("resource/level3.txt");
         });
 
         level4.addActionListener(l->{
-            frameController.setLevel(4);
-            MapMatrix mapMatrix = new MapMatrix(new int[][]{
-                    {0, 1, 1, 1, 1, 1, 0},
-                    {1, 1, 20, 0, 0, 1, 1},
-                    {1, 0, 0, 1, 0, 0, 1},
-                    {1, 0, 10, 12, 10, 0, 1},
-                    {1, 0, 0, 2, 0, 0, 1},
-                    {1, 1, 0, 2, 0, 1, 1},
-                    {0, 1, 1, 1, 1, 1, 0},
-            });
-            GameFrame gameFrame = new GameFrame(600, 550, mapMatrix,frameController);
-            frameController.setGameFrame(gameFrame);
-            this.setVisible(false);
-            gameFrame.setVisible(true);
+            frameController.loadGame("resource/level4.txt");
         });
 
         level5.addActionListener(l->{
-            frameController.setLevel(5);
-            MapMatrix mapMatrix = new MapMatrix(new int[][]{
-                    {1, 1, 1, 1, 1, 1, 0, 0},
-                    {1, 0, 0, 0, 0, 1, 1, 1},
-                    {1, 0, 0, 0, 2, 2, 0, 1},
-                    {1, 0, 10, 10, 10, 20, 0, 1},
-                    {1, 0, 0, 1, 0, 2, 0, 1},
-                    {1, 1, 1, 1, 1, 1, 1, 1},
-            });
-            GameFrame gameFrame = new GameFrame(600, 550, mapMatrix,frameController);
-            frameController.setGameFrame(gameFrame);
-            this.setVisible(false);
-            gameFrame.setVisible(true);
+            frameController.loadGame("resource/level5.txt");
         });
         //todo: complete all level.
 
+        frameController.setLevelFrame(this); //把LevelFrame与FrameController进行绑定
         this.setLocationRelativeTo(null);
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
     }
 
-    public FrameController getFrameController() { return frameController; }
+    public static FrameController getFrameController() { return frameController; }
 
 }

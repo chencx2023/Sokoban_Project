@@ -1,22 +1,28 @@
 package controller;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import model.Direction;
 import model.MapMatrix;
-import model.User;
 import util.FileUtil;
 import view.game.GamePanel;
 import view.game.GridComponent;
 import view.game.Hero;
 import view.game.Box;
 import view.game.GameFrame;
+import view.level.LevelFrame;
+
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
+
+import static view.level.LevelFrame.levels;
+
 
 /**
  * It is a bridge to combine GamePanel(view) and MapMatrix(model) in one game.
@@ -26,9 +32,16 @@ public class GameController {
     private final GamePanel view;//gamepanel是final的
     private final MapMatrix model;
     private final GameFrame frame;
+    private final LevelFrame levelFrame = new LevelFrame(650,200);
+    private final List<int[][]> maps = new ArrayList<>();
+    FileUtil fileUtil=new FileUtil();
+
+    public List<int[][]> getMaps() {
+        return maps;
+    }
+
     private boolean haswon = false;
     private boolean haslosed = false;
-    FileUtil fileUtil=new FileUtil();
 
 
     public GameController(GameFrame frame, GamePanel view, MapMatrix model) {
@@ -41,10 +54,11 @@ public class GameController {
     public void restartGame() {
         //ToDo: reset model & view
         System.out.println("Do restart game here");
-        haswon = true;
+        haswon = false;
         haslosed = false;
         this.model.resetMapMatrix();
         this.view.restartGame();
+        maps.clear();
     }
 
     public boolean doMove(int row, int col, Direction direction) {
@@ -56,6 +70,8 @@ public class GameController {
         int ttCol = tCol + direction.getCol();
         GridComponent targetGrid = view.getGridComponent(tRow, tCol);
         int[][] map = model.getMatrix();
+        int[][] copy_map = MapMatrix.copyArray(map);
+        maps.add(copy_map);
         if (map[tRow][tCol] == 0 || map[tRow][tCol] == 2) {
             //update hero in MapMatrix
             model.getMatrix()[row][col] -= 20;
@@ -84,6 +100,20 @@ public class GameController {
             return true;
         }
         return false;
+    }
+
+    public void undo(){
+        if(!maps.isEmpty()){
+            for (int i = 0; i < maps.size(); i++) {
+                System.out.println(Arrays.deepToString(maps.get(i)));
+            }
+            model.setMatrix(maps.get(maps.size()-1));
+            System.out.println(Arrays.deepToString(model.getMatrix()));
+            view.ResetGamePanel();
+        }
+        else {
+            Toast.displayToast("This has been the first step\nCan't undo anymore!",3000);
+        }
     }
 
     public void checkwin() {
@@ -118,10 +148,40 @@ public class GameController {
                 ImageIcon smileyIcon = new ImageIcon(resizedImage);
 
                 // 显示消息对话框，并使用自定义的笑脸图标
-                JOptionPane.showMessageDialog(frame, "You Win!", "Victory", JOptionPane.INFORMATION_MESSAGE, smileyIcon);
+                String message = "Congratulation, you win!!!\nDo you want to enter the next level?";
+                String title = "Victory";
+
+                // 自定义按钮选项
+                String[] options = {"No", "Yes"};
+
+                //修改消息的字体
+                Font customFont = new Font("Comic Sans MS", Font.BOLD, 16);
+                JTextArea textArea = new JTextArea(message);
+                textArea.setFont(customFont); // 设置字体为 Serif，粗体，大小为 16
+                textArea.setEditable(false);  // 设置文本不可编辑
+                textArea.setBackground(frame.getBackground()); // 可选：设置背景色与 JFrame 一致
+
+                // 显示选项对话框，返回用户选择的按钮索引
+                int choice = JOptionPane.showOptionDialog(
+                        frame,
+                        new JScrollPane(textArea),
+                        title,
+                        JOptionPane.DEFAULT_OPTION,
+                        JOptionPane.WARNING_MESSAGE,
+                        smileyIcon,
+                        options,
+                        options[0]
+                );
+
+                // 根据用户选择执行不同操作
+                if (choice == 1) {
+                   nextlevel();
+                }
+
             } catch (Exception e) {
                 e.printStackTrace();
             }
+
 
         }
 
@@ -164,10 +224,15 @@ public class GameController {
                 // 创建一个新的ImageIcon对象，使用调整大小后的图像
                 ImageIcon expressionIcon = new ImageIcon(resizedImage);
 
-                // 显示消息对话框，并使用自定义的笑脸图标
-
-                String message = "Box can't be moved,You losed!";
+                String message = "Box can't be moved\nYou losed!";
                 String title = "Game Over";
+
+                //修改message字体
+                Font customFont = new Font("Comic Sans MS", Font.BOLD, 16);
+                JTextArea textArea = new JTextArea(message);
+                textArea.setFont(customFont); // 设置字体为 Serif，粗体，大小为 16
+                textArea.setEditable(false);  // 设置文本不可编辑
+                textArea.setBackground(frame.getBackground()); // 可选：设置背景色与 JFrame 一致
 
                 // 自定义按钮选项
                 String[] options = {"Continue", "Restart"};
@@ -175,7 +240,7 @@ public class GameController {
                 // 显示选项对话框，返回用户选择的按钮索引
                 int choice = JOptionPane.showOptionDialog(
                         frame,
-                        message,
+                        new JScrollPane(textArea),
                         title,
                         JOptionPane.DEFAULT_OPTION,
                         JOptionPane.WARNING_MESSAGE,
@@ -188,13 +253,87 @@ public class GameController {
                 if (choice == 1) {
                     restartGame(); // 调用重新开始的方法
                 }
+                // 显示消息对话框，并使用自定义的笑脸图标
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        }
+    }
+
+    public void nextlevel() {
+        int j = 1;
+        // 遍历 levels 中的所有矩阵并打印
+        for (int i = 0; i < levels.size(); i++) {
+            System.out.println("levels.get(" + i + "): " + Arrays.deepToString(levels.get(i)));
+        }
+        System.out.println("model.getMatrix(): " + Arrays.deepToString(model.getInitialMatrix()));
+        for (int i = 0; i < levels.size(); i++) {
+            System.out.println("levels.get(i): " + Arrays.deepToString(levels.get(i)));
+            if (Arrays.deepEquals(model.getInitialMatrix(), levels.get(i))) {
+                j = i + 2;
+                break;
+            }
+        }
+        //关掉这个level:
+        if(j<=levels.size()){
+            restartGame();
+            frame.dispose();
+            //进行下一个level:
+            String path = "resource/level" + j + ".txt";
+            FrameController frameController = new FrameController();
+            frameController.loadGame(path);
+        }
+        else {
+            try {
+                // 摘取对图片进行缩放操作
+                // 加载原始图像文件
+                File file = new File("resource/smiling-face-with-smiling-eyes-emoji-clipart-sm.png");
+                BufferedImage originalImage = ImageIO.read(file);
+
+                // 创建一个新的BufferedImage对象，具有所需的尺寸
+                int width = 64;  // 新的宽度
+                int height = 64; // 新的高度
+                BufferedImage resizedImage = new BufferedImage(width, height, originalImage.getTransparency());
+
+                // 绘制原始图像到新的BufferedImage对象，实现缩放
+                Graphics2D g2d = resizedImage.createGraphics();
+                g2d.drawImage(originalImage, 0, 0, width, height, null);
+                g2d.dispose();
+
+                // 创建一个新的ImageIcon对象，使用调整大小后的图像
+                ImageIcon smileyIcon = new ImageIcon(resizedImage);
+
+                // 显示消息对话框，并使用自定义的笑脸图标
+                String message = "This has been the last level";
+                String title = "The End";
+
+                // 自定义按钮选项
+                String[] options = {"Continue", "Return"};
+
+                // 显示选项对话框，返回用户选择的按钮索引
+                int choice = JOptionPane.showOptionDialog(
+                        frame,
+                        message,
+                        title,
+                        JOptionPane.DEFAULT_OPTION,
+                        JOptionPane.WARNING_MESSAGE,
+                        smileyIcon,
+                        options,
+                        options[0]
+                );
+
+                // 根据用户选择执行不同操作
+                if (choice == 1) {
+                    frame.dispose();
+                }
 
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
     }
-
     public void saveGame() {
         // 获取用户名和关卡名，用于生成文件名
         String username = frame.getFrameController().getUser();
@@ -247,6 +386,7 @@ public class GameController {
             JOptionPane.showMessageDialog(frame, "Failed to save game: " + e.getMessage());
         }
     }
+
 
     //todo: add other methods such as loadGame, saveGame...
 }

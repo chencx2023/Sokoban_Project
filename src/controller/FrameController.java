@@ -9,6 +9,9 @@ import view.login.LoginSelectionFrame;
 
 import javax.swing.*;
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
 
 public class FrameController {
@@ -65,7 +68,7 @@ public class FrameController {
         levelFrame.setVisible(true); //显示LevelFrame
     }
 
-    public void loadGame(String path, JFrame frame) {
+    public void loadGame1(String path, JFrame frame) {
         frame.dispose();
 
         //file path-->string-->array-->MapMatrix model
@@ -93,6 +96,45 @@ public class FrameController {
         gameFrame.setVisible(true);
     }
 
+    public int[][] loadmatrix(String path) {
+        List<String> lines;
+        try {
+            lines = Files.readAllLines(Paths.get(path));
+        } catch (IOException e) {
+            throw new RuntimeException("Error reading file: " + path, e);
+        }
+
+        if (lines.isEmpty()) {
+            throw new IllegalArgumentException("The file is empty or invalid: " + path);
+        }
+
+        int[][] map = new int[lines.size()][];
+        int expectedLength = -1;
+
+        for (int i = 0; i < lines.size(); i++) {
+            String line = lines.get(i).trim();
+            if (line.isEmpty()) {
+                continue; // 跳过空行
+            }
+
+            String[] elements = line.split("\\s+");
+            if (expectedLength == -1) {
+                expectedLength = elements.length; // 设置第一行的长度为期望长度
+            } else if (elements.length != expectedLength) {
+                throw new IllegalArgumentException("Inconsistent row lengths in the file at line " + (i + 1));
+            }
+
+            map[i] = new int[elements.length];
+            for (int j = 0; j < elements.length; j++) {
+                try {
+                    map[i][j] = Integer.parseInt(elements[j]);
+                } catch (NumberFormatException e) {
+                    throw new IllegalArgumentException("Invalid number format at line " + (i + 1) + ", column " + (j + 1) + ": '" + elements[j] + "'");
+                }
+            }
+        }
+        return map;
+    }
     public void setLoginFrame(LoginFrame loginFrame) {
         this.loginFrame=loginFrame;
     }
@@ -104,6 +146,16 @@ public class FrameController {
     }
     public GameFrame getGameFrame(){
         return gameFrame;
+    }
+    public void loadGame(String path, JFrame frame) {
+        frame.dispose();
+        loadGame(path);
+    }
+
+    public void loadGame(String path) {
+        MapMatrix mapMatrix=new MapMatrix(loadmatrix(path));
+        GameFrame gameFrame=new GameFrame(600, 450, mapMatrix,this);
+        gameFrame.setVisible(true);
     }
 
     public void showLoginSelectionFrame() {
@@ -125,5 +177,6 @@ public class FrameController {
         loginFrame.setVisible(false);
         levelFrame.setVisible(true);
     }
-}
 
+
+}

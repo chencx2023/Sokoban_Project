@@ -16,9 +16,21 @@ public class GamePanel extends ListenerPanel {
 
     private GridComponent[][] grids;
     private MapMatrix model;
+
+    public JLabel getTrailLabel() {
+        return trailLabel;
+    }
+
+    public void setTrailLabel(JLabel trailLabel) {
+        this.trailLabel = trailLabel;
+    }
+
     private GameController controller;
     private JLabel stepLabel;
+    private JLabel trailLabel;
+
     private int steps;
+    private int trail = 0;
     private final int GRID_SIZE = 50;
 
     private Hero hero;
@@ -32,11 +44,7 @@ public class GamePanel extends ListenerPanel {
         this.model = model;
         this.grids = new GridComponent[model.getHeight()][model.getWidth()];
         initialGame();
-
     }
-
-    public int getSteps() {return steps;}
-    public void setSteps(int steps) {this.steps = steps;}
 
     public void initialGame() {
         this.steps = 0;
@@ -95,14 +103,28 @@ public class GamePanel extends ListenerPanel {
         }
     }
 
+    public int getSteps() {
+        return steps;
+    }
+
+    public void setSteps(int steps) {
+        this.steps = steps;
+    }
+
     public void afterMove() {
         this.steps++;
         this.stepLabel.setText(String.format("Step: %d", this.steps));
     }
 
+
+    public JLabel getStepLabel() {
+        return stepLabel;
+    }
+
     public void setStepLabel(JLabel stepLabel) {
         this.stepLabel = stepLabel;
     }
+
 
     public void setController(GameController controller) {
         this.controller = controller;
@@ -114,8 +136,8 @@ public class GamePanel extends ListenerPanel {
     public void restartGame(){
         //ToDo: reset step & GridComponents
         //reset steps
-        this.setSteps(0);
-        this.stepLabel.setText(String.format("Step: %d", this.getSteps()));
+        steps=0;
+        this.stepLabel.setText(String.format("Step: %d", this.steps));
         //reset gridComponents
         for (int i = 0; i < grids.length; i++) {
             for (int j = 0; j < grids[i].length; j++) {
@@ -138,5 +160,40 @@ public class GamePanel extends ListenerPanel {
                 }
             }
         }
+        trail++;
+        this.afterRestart();
+//为什么只能restart一次？？
     }
+
+    public void ResetGamePanel(){
+        steps--;
+        for (int i = 0; i < grids.length; i++) {
+            for (int j = 0; j < grids[i].length; j++) {
+                //remove box and hero
+                if(grids[i][j].getHero()!=null){
+                    grids[i][j].removeHeroFromGrid();
+                }
+                if(grids[i][j].getBox()!=null){
+                    grids[i][j].removeBoxFromGrid();
+                }
+                //add box & hero to their initial grid
+                switch (model.getId(i,j)/10){
+                    case 1:
+                        grids[i][j].setBoxInGrid(new Box(GRID_SIZE - 10, GRID_SIZE - 10,i,j));
+                        break;
+                    case 2:
+                        this.hero = new Hero(GRID_SIZE - 16, GRID_SIZE - 16, i, j);
+                        grids[i][j].setHeroInGrid(hero);
+                        break;
+                }
+            }
+        }
+    }
+
+    public void afterRestart() {
+        this.trailLabel.setText(String.format("Trail: %d", this.trail));
+    }
+
+
+
 }

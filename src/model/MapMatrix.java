@@ -19,24 +19,27 @@ package model;
  */
 public class MapMatrix {
     int[][] matrix;
-    private final int[][] initialMatrix; //存储原始地图（设置成final)，用于restartGame
 
+    private final int[][] initialMatrix; //used to restartGame
+
+    public int[][] getInitialMatrix() {
+        return initialMatrix;
+    }
 
     public MapMatrix(int[][] matrix) {
         this.matrix = matrix;
         initialMatrix=copyArray(matrix);
     }
 
-    public int[][] copyArray(int[][] a){
+    public static int[][] copyArray(int[][] a){
         int[][] b=new int[a.length][a[0].length];
         for (int i = 0; i < a.length; i++) {
-            for (int j = 0; j < a[i].length; j++) {
+            for (int j = 0; j < a[0].length; j++) {
                 b[i][j]=a[i][j];
             }
         }
         return b;
     }
-
     public void resetMapMatrix(){
         this.matrix=copyArray(initialMatrix);
     }
@@ -51,6 +54,10 @@ public class MapMatrix {
 
     public int getId(int row, int col) {
         return matrix[row][col];
+    }
+
+    public void setMatrix(int[][] matrix) {
+        this.matrix = matrix;
     }
 
     public int[][] getMatrix() {
