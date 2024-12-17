@@ -69,7 +69,6 @@ public class FrameController {
         frame.dispose();
 
         //file path-->string-->array-->MapMatrix model
-
         //read file to String
         List<String> lines = fileUtil.readFileToList(path);
         for (String line : lines) {
@@ -90,6 +89,7 @@ public class FrameController {
         MapMatrix mapMatrix=new MapMatrix(map);
         GameFrame gameFrame=new GameFrame(600, 550, mapMatrix,this);
         gameFrame.getGamePanel().setSteps(Integer.parseInt(lines.get(lines.size()-1)));
+        gameFrame.updateStepLabel();
         gameFrame.setVisible(true);
     }
 

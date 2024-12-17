@@ -37,7 +37,7 @@ public class GameFrame extends JFrame {
         this.loadBtn = FrameUtil.createButton(this, "Load", new Point(gamePanel.getWidth() + 80, 210), 80, 50);
         this.returnBtn = FrameUtil.createButton(this, "Return", new Point(gamePanel.getWidth() + 80, 300), 80, 50);
         this.saveBtn = FrameUtil.createButton(this, "Save", new Point(gamePanel.getWidth() + 80, 390), 80, 50);
-        this.stepLabel = FrameUtil.createJLabel(this, "Start", new Font("serif", Font.ITALIC, 22), new Point(gamePanel.getWidth() + 80, 70), 180, 50);
+        this.stepLabel = FrameUtil.createJLabel(this, "Steps:0", new Font("serif", Font.ITALIC, 22), new Point(gamePanel.getWidth() + 80, 70), 180, 50);
         gamePanel.setStepLabel(stepLabel);
 
         this.restartBtn.addActionListener(e -> {
@@ -79,6 +79,12 @@ public class GameFrame extends JFrame {
         this.setLocationRelativeTo(null);
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
     }
+    public void updateStepLabel() {
+        int steps = gamePanel.getSteps();
+        String stepText = String.format("Steps: %d", steps);
+        stepLabel.setText(stepText); // 更新 stepLabel 的文本
+    }
+
     private void initGameLoop() {
         new Timer(1000 / 60, e -> {
             controller.checkwin();
