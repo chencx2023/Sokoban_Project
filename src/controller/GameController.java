@@ -106,12 +106,9 @@ public class GameController {
 
     public void undo(){
         if(!maps.isEmpty()){
-            for (int i = 0; i < maps.size(); i++) {
-                System.out.println(Arrays.deepToString(maps.get(i)));
-            }
             model.setMatrix(maps.get(maps.size()-1));
-            System.out.println(Arrays.deepToString(model.getMatrix()));
             view.ResetGamePanel();
+            maps.remove(maps.size()-1);
         }
         else {
             Toast.displayToast("This has been the first step\nCan't undo anymore!",3000);
@@ -133,7 +130,7 @@ public class GameController {
             try {
                 // 摘取对图片进行缩放操作
                 // 加载原始图像文件
-                File file = new File("resource/smiling-face-with-smiling-eyes-emoji-clipart-sm.png");
+                File file = new File("resource/pictures/smile.png");
                 BufferedImage originalImage = ImageIO.read(file);
 
                 // 创建一个新的BufferedImage对象，具有所需的尺寸
@@ -207,7 +204,7 @@ public class GameController {
             try {
                 // 摘取对图片进行缩放操作
                 // 加载原始图像文件
-                File file = new File("resource/pngtree-cry-face-emoji-emoticon-expression-png-image_5246498.png");
+                File file = new File("resource/pictures/expression.png");
                 BufferedImage originalImage = ImageIO.read(file);
 
                 // 创建一个新的BufferedImage对象，具有所需的尺寸
@@ -263,13 +260,7 @@ public class GameController {
 
     public void nextlevel() {
         int j = 1;
-        // 遍历 levels 中的所有矩阵并打印
         for (int i = 0; i < levels.size(); i++) {
-            System.out.println("levels.get(" + i + "): " + Arrays.deepToString(levels.get(i)));
-        }
-        System.out.println("model.getMatrix(): " + Arrays.deepToString(model.getInitialMatrix()));
-        for (int i = 0; i < levels.size(); i++) {
-            System.out.println("levels.get(i): " + Arrays.deepToString(levels.get(i)));
             if (Arrays.deepEquals(model.getInitialMatrix(), levels.get(i))) {
                 j = i + 2;
                 break;
@@ -280,31 +271,11 @@ public class GameController {
             restartGame();
             frame.dispose();
             //进行下一个level:
-            String path = "resource/level" + j + ".txt";
+            String path = "resource/level/level" + j + ".txt";
             FrameController frameController = new FrameController();
             frameController.loadGame(path);
         }
         else {
-            try {
-                // 摘取对图片进行缩放操作
-                // 加载原始图像文件
-                File file = new File("resource/smiling-face-with-smiling-eyes-emoji-clipart-sm.png");
-                BufferedImage originalImage = ImageIO.read(file);
-
-                // 创建一个新的BufferedImage对象，具有所需的尺寸
-                int width = 64;  // 新的宽度
-                int height = 64; // 新的高度
-                BufferedImage resizedImage = new BufferedImage(width, height, originalImage.getTransparency());
-
-                // 绘制原始图像到新的BufferedImage对象，实现缩放
-                Graphics2D g2d = resizedImage.createGraphics();
-                g2d.drawImage(originalImage, 0, 0, width, height, null);
-                g2d.dispose();
-
-                // 创建一个新的ImageIcon对象，使用调整大小后的图像
-                ImageIcon smileyIcon = new ImageIcon(resizedImage);
-
-                // 显示消息对话框，并使用自定义的笑脸图标
                 String message = "This has been the last level";
                 String title = "The End";
 
@@ -318,7 +289,7 @@ public class GameController {
                         title,
                         JOptionPane.DEFAULT_OPTION,
                         JOptionPane.WARNING_MESSAGE,
-                        smileyIcon,
+                        null,
                         options,
                         options[0]
                 );
@@ -327,10 +298,6 @@ public class GameController {
                 if (choice == 1) {
                     frame.dispose();
                 }
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
         }
     }
 

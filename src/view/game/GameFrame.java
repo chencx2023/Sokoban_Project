@@ -42,7 +42,7 @@ public class GameFrame extends JFrame {
         this.returnBtn = FrameUtil.createButton(this, "Return", new Point(gamePanel.getWidth() + 80, 260), 80, 50);
         this.undoBtn = FrameUtil.createButton(this, "Undo", new Point(gamePanel.getWidth() + 80, 330), 80, 50);
         this.saveBtn = FrameUtil.createButton(this, "Save", new Point(gamePanel.getWidth() + 80, 400), 80, 50);
-        this.stepLabel = FrameUtil.createJLabel(this, "Start", new Font("serif", Font.ITALIC, 22), new Point(gamePanel.getWidth() + 80, 70), 180, 50);
+        this.stepLabel = FrameUtil.createJLabel(this, "Step:0", new Font("serif", Font.ITALIC, 22), new Point(gamePanel.getWidth() + 80, 70), 180, 50);
         this.trailLabel = FrameUtil.createJLabel(this, "Trail", new Font("serif", Font.ITALIC, 22), new Point(gamePanel.getWidth() + 80, 20), 180, 50);
         gamePanel.setStepLabel(stepLabel);
         gamePanel.setTrailLabel(trailLabel);
@@ -66,6 +66,11 @@ public class GameFrame extends JFrame {
             frameController.loadGame1(path, this);
 
             System.out.println(path);
+        });
+
+        this.undoBtn.addActionListener(e -> {
+            controller.undo();
+            gamePanel.requestFocusInWindow();//enable key listener
         });
 
         //todo: add other button here

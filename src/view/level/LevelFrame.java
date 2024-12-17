@@ -22,11 +22,11 @@ public class LevelFrame extends JFrame {
     }
 
     static {
-        levels.add(frameController.loadmatrix("resource/level1.txt"));
-        levels.add(frameController.loadmatrix("resource/level2.txt"));
-        levels.add(frameController.loadmatrix("resource/level3.txt"));
-        levels.add(frameController.loadmatrix("resource/level4.txt"));
-        levels.add(frameController.loadmatrix("resource/level5.txt"));
+        levels.add(frameController.loadmatrix("resource/level/level1.txt"));
+        levels.add(frameController.loadmatrix("resource/level/level2.txt"));
+        levels.add(frameController.loadmatrix("resource/level/level3.txt"));
+        levels.add(frameController.loadmatrix("resource/level/level4.txt"));
+        levels.add(frameController.loadmatrix("resource/level/level5.txt"));
     }
     public LevelFrame(int width, int height,FrameController frameController) {
         this.frameController=frameController;
@@ -41,27 +41,27 @@ public class LevelFrame extends JFrame {
 
         level1.addActionListener(l->{
             frameController.setLevel(1);
-            frameController.loadGame("resource/level1.txt");
+            frameController.loadGame("resource/level/level1.txt");
         });
 
         level2.addActionListener(l->{
             frameController.setLevel(2);
-            frameController.loadGame("resource/level2.txt");
+            frameController.loadGame("resource/level/level2.txt");
         });
 
         level3.addActionListener(l->{
             frameController.setLevel(3);
-            frameController.loadGame("resource/level3.txt");
+            frameController.loadGame("resource/level/level3.txt");
         });
 
         level4.addActionListener(l->{
             frameController.setLevel(4);
-            frameController.loadGame("resource/level4.txt");
+            frameController.loadGame("resource/level/level4.txt");
         });
 
         level5.addActionListener(l->{
             frameController.setLevel(5);
-            frameController.loadGame("resource/level5.txt");
+            frameController.loadGame("resource/level/level5.txt");
         });
         //todo: complete all level.
 
