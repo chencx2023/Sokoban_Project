@@ -7,6 +7,7 @@ import model.MapMatrix;
 import javax.swing.*;
 import javax.swing.border.Border;
 import java.awt.*;
+import java.util.Arrays;
 
 /**
  * It is the subclass of ListenerPanel, so that it should implement those four methods: do move left, up, down ,right.
@@ -108,6 +109,8 @@ public class GamePanel extends ListenerPanel {
 
     public void afterMove() {
         this.steps++;
+        int[][] copy_map = MapMatrix.copyArray(model.getMatrix());
+        controller.getMaps().add(copy_map);
         this.stepLabel.setText(String.format("Step: %d", this.steps));
     }
 
@@ -161,7 +164,6 @@ public class GamePanel extends ListenerPanel {
     }
 
     public void ResetGamePanel(){
-        steps--;
         for (int i = 0; i < grids.length; i++) {
             for (int j = 0; j < grids[i].length; j++) {
                 //remove box and hero
@@ -183,10 +185,13 @@ public class GamePanel extends ListenerPanel {
                 }
             }
         }
+        this.steps -= 1;
+        this.stepLabel.setText(String.format("Step: %d", this.steps));
     }
 
     public void afterRestart() {
         this.trailLabel.setText(String.format("Trail: %d", this.trail));
     }
+
 
 }

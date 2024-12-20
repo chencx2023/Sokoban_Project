@@ -50,6 +50,7 @@ public class GameController {
         this.frame = frame;
         this.view = view;
         this.model = model;
+        maps.add(MapMatrix.copyArray(model.getMatrix()));
         view.setController(this);
     }
 
@@ -61,6 +62,7 @@ public class GameController {
         this.model.resetMapMatrix();
         this.view.restartGame();
         maps.clear();
+        maps.add(model.getInitialMatrix());
     }
 
     public boolean doMove(int row, int col, Direction direction) {
@@ -72,8 +74,6 @@ public class GameController {
         int ttCol = tCol + direction.getCol();
         GridComponent targetGrid = view.getGridComponent(tRow, tCol);
         int[][] map = model.getMatrix();
-        int[][] copy_map = MapMatrix.copyArray(map);
-        maps.add(copy_map);
         if (map[tRow][tCol] == 0 || map[tRow][tCol] == 2) {
             //update hero in MapMatrix
             model.getMatrix()[row][col] -= 20;
@@ -105,13 +105,16 @@ public class GameController {
     }
 
     public void undo(){
-        if(!maps.isEmpty()){
-            model.setMatrix(maps.get(maps.size()-1));
+        if(maps.size()>1){
+            maps.subList(maps.size() - 1, maps.size()).clear();
+            int[][] previous = MapMatrix.copyArray(maps.get(maps.size()-1));
+            model.setMatrix(previous);
             view.ResetGamePanel();
-            maps.remove(maps.size()-1);
         }
         else {
-            Toast.displayToast("This has been the first step\nCan't undo anymore!",3000);
+            Toast.displayToast("This has been the first step\nCan't undo anymore!",300);
+            maps.clear();
+            maps.add(MapMatrix.copyArray(model.getInitialMatrix()));
         }
     }
 
