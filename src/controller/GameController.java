@@ -22,6 +22,8 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.Arrays;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import static view.level.LevelFrame.levels;
 
@@ -36,6 +38,7 @@ public class GameController {
     private final GameFrame frame;
 //    private final LevelFrame levelFrame = new LevelFrame(650,200);
     private final List<int[][]> maps = new ArrayList<>();
+    private ReplayWindow replayWindow;
     FileUtil fileUtil=new FileUtil();
 
     public List<int[][]> getMaps() {
@@ -118,6 +121,45 @@ public class GameController {
         }
     }
 
+    public GamePanel getView() {
+        return view;
+    }
+
+    public void startReplay() {
+        // 创建一个新的回放窗口
+        replayWindow = new ReplayWindow(model,this);
+
+        // 显示回放窗口
+        replayWindow.setVisible(true);
+
+        Timer timer = new Timer();  // 使用 java.util.Timer
+        int delay = 800;  // 每100毫秒展示一帧
+        int period = 800; // 每100毫秒更新一次
+
+        for (int i = 0; i < maps.size(); i++) {
+            System.out.println(Arrays.deepToString(maps.get(i)));
+        }
+
+        // 定义回放任务
+        TimerTask replayTask = new TimerTask() {
+            private int index = maps.size() - 1;
+            @Override
+            public void run() {
+                if (index >= 0) {
+                    // 获取当前步骤的模型状态
+                    int[][] currentState = maps.get(index);
+                    // 更新回放窗口中的视图
+                    replayWindow.updateView(currentState);
+                    // 减少索引，展示下一帧
+                    index--;
+                } else {
+                    timer.cancel();  // 结束回放
+                }
+            }
+        };
+        // 启动定时器
+        timer.scheduleAtFixedRate(replayTask, delay, period);
+    }
     public void checkwin() {
         boolean iswin = true;
         int[][] a = model.getMatrix();

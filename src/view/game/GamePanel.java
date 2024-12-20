@@ -16,6 +16,15 @@ import java.util.Arrays;
 public class GamePanel extends ListenerPanel {
     private GridComponent[][] grids;
     private MapMatrix model;
+
+    public MapMatrix getModel() {
+        return model;
+    }
+
+    public void setModel(MapMatrix model) {
+        this.model = model;
+    }
+
     private GameController controller;
     private JLabel stepLabel;
     private JLabel trailLabel;
@@ -161,9 +170,10 @@ public class GamePanel extends ListenerPanel {
         }
         trail++;
         this.afterRestart();
+        this.repaint();
     }
 
-    public void ResetGamePanel(){
+    public void updateview(){
         for (int i = 0; i < grids.length; i++) {
             for (int j = 0; j < grids[i].length; j++) {
                 //remove box and hero
@@ -185,8 +195,14 @@ public class GamePanel extends ListenerPanel {
                 }
             }
         }
+        this.repaint();
+    }
+
+    public void ResetGamePanel(){
+        updateview();
         this.steps -= 1;
         this.stepLabel.setText(String.format("Step: %d", this.steps));
+        this.repaint();
     }
 
     public void afterRestart() {

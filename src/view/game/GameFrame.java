@@ -18,6 +18,7 @@ public class GameFrame extends JFrame {
     private JButton returnBtn;
     private JButton saveBtn;
     private JButton undoBtn;
+    private JButton replayBtn;
 
 
     private JLabel stepLabel;
@@ -30,7 +31,7 @@ public class GameFrame extends JFrame {
         this.setLayout(null);
         this.setSize(width, height);
         gamePanel = new GamePanel(mapMatrix);//new的同时initiateGame
-        gamePanel.setLocation(30, height / 2 - gamePanel.getHeight() / 2);
+        gamePanel.setLocation(30, height / 2 - gamePanel.getHeight() / 2 - 100);
         this.add(gamePanel);
         this.controller = new GameController(this,gamePanel, mapMatrix);
         this.frameController=frameController;
@@ -41,7 +42,8 @@ public class GameFrame extends JFrame {
         this.loadBtn = FrameUtil.createButton(this, "Load", new Point(gamePanel.getWidth() + 80, 190), 80, 50);
         this.returnBtn = FrameUtil.createButton(this, "Return", new Point(gamePanel.getWidth() + 80, 260), 80, 50);
         this.undoBtn = FrameUtil.createButton(this, "Undo", new Point(gamePanel.getWidth() + 80, 330), 80, 50);
-        this.saveBtn = FrameUtil.createButton(this, "Save", new Point(gamePanel.getWidth() + 80, 400), 80, 50);
+        this.replayBtn = FrameUtil.createButton(this, "Replay", new Point(gamePanel.getWidth() + 80, 400), 80, 50);
+        this.saveBtn = FrameUtil.createButton(this, "Save", new Point(gamePanel.getWidth() + 80, 470), 80, 50);
         this.stepLabel = FrameUtil.createJLabel(this, "Step:0", new Font("serif", Font.ITALIC, 22), new Point(gamePanel.getWidth() + 80, 70), 180, 50);
         this.trailLabel = FrameUtil.createJLabel(this, "Trail", new Font("serif", Font.ITALIC, 22), new Point(gamePanel.getWidth() + 80, 20), 180, 50);
         gamePanel.setStepLabel(stepLabel);
@@ -72,6 +74,12 @@ public class GameFrame extends JFrame {
             controller.undo();
             gamePanel.requestFocusInWindow();//enable key listener
         });
+
+        this.replayBtn.addActionListener(e -> {
+            controller.startReplay();
+            gamePanel.requestFocusInWindow();//enable key listener
+        });
+
 
         //todo: add other button here
         this.returnBtn.addActionListener(e -> {
