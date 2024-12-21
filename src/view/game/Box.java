@@ -15,7 +15,7 @@ public class Box extends JComponent {
         this.col = col;
         this.row = row;
         this.setSize(width, height);
-        this.setLocation(5, 5);
+        this.setLocation(0, 0);
         boxImage=new ImageIcon("resource/pictures/box.png").getImage();
     }
 

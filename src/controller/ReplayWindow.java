@@ -34,7 +34,7 @@ public class ReplayWindow extends JFrame {
 
     private void initializeWindow() {
         setTitle("Game Replay");
-        setSize(800, 400);
+        setSize(800, 500);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
         setLayout(new BorderLayout(10, 10));
