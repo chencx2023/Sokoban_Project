@@ -3,6 +3,7 @@ package view.game;
 import controller.GameController;
 import model.Direction;
 import model.MapMatrix;
+import util.SoundEffect;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -16,6 +17,7 @@ import java.util.Arrays;
 public class GamePanel extends ListenerPanel {
     private GridComponent[][] grids;
     private MapMatrix model;
+    private SoundEffect stepSound;
 
     public MapMatrix getModel() {
         return model;
@@ -41,6 +43,7 @@ public class GamePanel extends ListenerPanel {
         this.setSize(model.getWidth() * GRID_SIZE + 4, model.getHeight() * GRID_SIZE + 4);
         this.model = model;
         this.grids = new GridComponent[model.getHeight()][model.getWidth()];
+        stepSound=new SoundEffect("resource/music/move.wav");
         initialGame();
     }
     public JLabel getTrailLabel() {
@@ -80,6 +83,7 @@ public class GamePanel extends ListenerPanel {
     public void doMoveRight() {
         System.out.println("Click VK_RIGHT");
         if (controller.doMove(hero.getRow(), hero.getCol(), Direction.RIGHT)) {
+            stepSound.play();
             this.afterMove();
         }
     }
@@ -88,6 +92,7 @@ public class GamePanel extends ListenerPanel {
     public void doMoveLeft() {
         System.out.println("Click VK_LEFT");
         if(controller.doMove(hero.getRow(), hero.getCol(), Direction.LEFT)){
+            stepSound.play();
             this.afterMove();
         }
     }
@@ -96,6 +101,7 @@ public class GamePanel extends ListenerPanel {
     public void doMoveUp() {
         System.out.println("Click VK_Up");
        if( controller.doMove(hero.getRow(), hero.getCol(), Direction.UP)){
+           stepSound.play();
            this.afterMove();
        }
     }
@@ -104,6 +110,7 @@ public class GamePanel extends ListenerPanel {
     public void doMoveDown() {
         System.out.println("Click VK_DOWN");
         if(controller.doMove(hero.getRow(), hero.getCol(), Direction.DOWN)){
+            stepSound.play();
             this.afterMove();
         }
     }
