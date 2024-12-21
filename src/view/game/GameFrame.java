@@ -2,6 +2,8 @@ package view.game;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import controller.FrameController;
 import controller.GameController;
@@ -20,10 +22,13 @@ public class GameFrame extends JFrame {
     private JButton undoBtn;
     private JButton replayBtn;
 
-
     private JLabel stepLabel;
     private JLabel trailLabel;
     private GamePanel gamePanel;
+
+    private Timer timer;
+    private int seconds=0;
+    private JLabel timeLabel;
 
     public GameFrame(int width, int height, MapMatrix mapMatrix,FrameController frameController) {
         this.frameController = frameController;
@@ -48,6 +53,17 @@ public class GameFrame extends JFrame {
         this.trailLabel = FrameUtil.createJLabel(this, "Trail", new Font("serif", Font.ITALIC, 22), new Point(gamePanel.getWidth() + 80, 20), 180, 50);
         gamePanel.setStepLabel(stepLabel);
         gamePanel.setTrailLabel(trailLabel);
+
+        this.timeLabel=FrameUtil.createJLabel(this, "Time:0", new Font("serif", Font.ITALIC, 22), new Point(gamePanel.getWidth() + 80, 600), 180, 50);
+
+        timer=new Timer(1000, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                seconds++;
+                updateTimeLabel();
+            }
+        });
+        timer.start();
 
         this.restartBtn.addActionListener(e -> {
             controller.restartGame();
@@ -113,6 +129,17 @@ public class GameFrame extends JFrame {
             controller.checklose();
         }).start();
     }
+
+    //更新计时器标签
+    private void updateTimeLabel(){
+        timeLabel.setText("Time:"+seconds);
+    }
+
+    //停止计时器
+    public void stopTimer(){
+        timer.stop();
+    }
+
 
     public FrameController getFrameController() {return frameController;}
     public GamePanel getGamePanel() {return gamePanel;}
