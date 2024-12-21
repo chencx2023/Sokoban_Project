@@ -41,6 +41,9 @@ public class GameController {
     private ReplayWindow replayWindow;
     FileUtil fileUtil=new FileUtil();
 
+    public GamePanel getView() {
+        return view;
+    }
     public List<int[][]> getMaps() {
         return maps;
     }
@@ -66,6 +69,13 @@ public class GameController {
         this.view.restartGame();
         maps.clear();
         maps.add(model.getInitialMatrix());
+    }
+
+    public void startGameFromCurrentModel(MapMatrix mapMatrix, int step){
+        haswon = false;
+        haslosed = false;
+        model.setMatrix(mapMatrix.getMatrix());
+        view.afterstartGameFromCurrentModel(step);
     }
 
     public boolean doMove(int row, int col, Direction direction) {
@@ -121,45 +131,15 @@ public class GameController {
         }
     }
 
-    public GamePanel getView() {
-        return view;
-    }
+
 
     public void startReplay() {
-        // 创建一个新的回放窗口
-        replayWindow = new ReplayWindow(model,this);
-
+        // 创建一个新的回放窗口并传递当前的游戏模型和控制器
+        replayWindow = new ReplayWindow(model, this);
         // 显示回放窗口
         replayWindow.setVisible(true);
-
-        Timer timer = new Timer();  // 使用 java.util.Timer
-        int delay = 800;  // 每100毫秒展示一帧
-        int period = 800; // 每100毫秒更新一次
-
-        for (int i = 0; i < maps.size(); i++) {
-            System.out.println(Arrays.deepToString(maps.get(i)));
-        }
-
-        // 定义回放任务
-        TimerTask replayTask = new TimerTask() {
-            private int index = maps.size() - 1;
-            @Override
-            public void run() {
-                if (index >= 0) {
-                    // 获取当前步骤的模型状态
-                    int[][] currentState = maps.get(index);
-                    // 更新回放窗口中的视图
-                    replayWindow.updateView(currentState);
-                    // 减少索引，展示下一帧
-                    index--;
-                } else {
-                    timer.cancel();  // 结束回放
-                }
-            }
-        };
-        // 启动定时器
-        timer.scheduleAtFixedRate(replayTask, delay, period);
     }
+
     public void checkwin() {
         boolean iswin = true;
         int[][] a = model.getMatrix();

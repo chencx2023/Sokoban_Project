@@ -147,27 +147,7 @@ public class GamePanel extends ListenerPanel {
         this.setSteps(0);
         this.stepLabel.setText(String.format("Step: %d", this.steps));
         //reset gridComponents
-        for (int i = 0; i < grids.length; i++) {
-            for (int j = 0; j < grids[i].length; j++) {
-                //remove box and hero
-                if(grids[i][j].getHero()!=null){
-                    grids[i][j].removeHeroFromGrid();
-                }
-                if(grids[i][j].getBox()!=null){
-                    grids[i][j].removeBoxFromGrid();
-                }
-                //add box & hero to their initial grid
-                switch (model.getId(i,j)/10){
-                    case 1:
-                        grids[i][j].setBoxInGrid(new Box(GRID_SIZE - 10, GRID_SIZE - 10,i,j));
-                        break;
-                    case 2:
-                        this.hero = new Hero(GRID_SIZE - 16, GRID_SIZE - 16, i, j);
-                        grids[i][j].setHeroInGrid(hero);
-                        break;
-                }
-            }
-        }
+        updateview();
         trail++;
         this.afterRestart();
         this.repaint();
@@ -209,5 +189,10 @@ public class GamePanel extends ListenerPanel {
         this.trailLabel.setText(String.format("Trail: %d", this.trail));
     }
 
+    public void afterstartGameFromCurrentModel(int steps){
+        updateview();
+        this.setSteps(steps);
+        this.stepLabel.setText(String.format("Step: %d", this.steps));
+    }
 
 }
