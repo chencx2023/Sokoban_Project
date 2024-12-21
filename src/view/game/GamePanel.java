@@ -65,7 +65,7 @@ public class GamePanel extends ListenerPanel {
                 //Ten digit maps to Box or Hero in corresponding location in the GridComponent. (Changed value)
                 switch (model.getId(i, j) / 10) {
                     case 1:
-                        grids[i][j].setBoxInGrid(new Box(GRID_SIZE - 10, GRID_SIZE - 10,i,j));
+                        grids[i][j].setBoxInGrid(new Box(GRID_SIZE , GRID_SIZE,i,j));
                         break;
                     case 2:
                         this.hero = new Hero(GRID_SIZE - 16, GRID_SIZE - 16, i, j);
@@ -174,7 +174,7 @@ public class GamePanel extends ListenerPanel {
                 //add box & hero to their initial grid
                 switch (model.getId(i,j)/10){
                     case 1:
-                        grids[i][j].setBoxInGrid(new Box(GRID_SIZE - 10, GRID_SIZE - 10,i,j));
+                        grids[i][j].setBoxInGrid(new Box(GRID_SIZE, GRID_SIZE,i,j));
                         break;
                     case 2:
                         this.hero = new Hero(GRID_SIZE - 16, GRID_SIZE - 16, i, j);
