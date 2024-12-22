@@ -28,47 +28,6 @@ public class LevelFrame extends JFrame {
         levels.add(frameController.loadmatrix("resource/level/level4.txt"));
         levels.add(frameController.loadmatrix("resource/level/level5.txt"));
     }
-//    public LevelFrame(int width, int height,FrameController frameController) {
-//        this.frameController=frameController;
-//        this.setTitle("Level");
-//        this.setLayout(null);
-//        this.setSize(width, height);
-//        JButton level1 = FrameUtil.createButton(this, "Level1", new Point(30, height / 2 - 50), 100, 100);
-//        JButton level2 = FrameUtil.createButton(this, "Level2", new Point(150, height / 2 - 50), 100, 100);
-//        JButton level3 = FrameUtil.createButton(this, "Level3", new Point(270, height / 2 - 50), 100, 100);
-//        JButton level4 = FrameUtil.createButton(this, "Level4", new Point(390, height / 2 - 50), 100, 100);
-//        JButton level5 = FrameUtil.createButton(this, "Level5", new Point(510, height / 2 - 50), 100, 100);
-//
-//        level1.addActionListener(l->{
-//            frameController.setLevel(1);
-//            frameController.loadGame("resource/level/level1.txt");
-//        });
-//
-//        level2.addActionListener(l->{
-//            frameController.setLevel(2);
-//            frameController.loadGame("resource/level/level2.txt");
-//        });
-//
-//        level3.addActionListener(l->{
-//            frameController.setLevel(3);
-//            frameController.loadGame("resource/level/level3.txt");
-//        });
-//
-//        level4.addActionListener(l->{
-//            frameController.setLevel(4);
-//            frameController.loadGame("resource/level/level4.txt");
-//        });
-//
-//        level5.addActionListener(l->{
-//            frameController.setLevel(5);
-//            frameController.loadGame("resource/level/level5.txt");
-//        });
-//        //todo: complete all level.
-//
-//        this.setLocationRelativeTo(null);
-//        this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-//    }
-
     public LevelFrame(int width, int height, FrameController frameController) {
         this.frameController = frameController;
         this.setTitle("Level");

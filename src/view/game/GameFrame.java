@@ -1,7 +1,13 @@
 package view.game;
 
 import javax.swing.*;
+import javax.swing.border.BevelBorder;
 import java.awt.*;
+import javax.sound.sampled.*;
+import java.io.File;
+import java.io.IOException;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 import controller.FrameController;
 import controller.GameController;
@@ -19,92 +25,186 @@ public class GameFrame extends JFrame {
     private JButton saveBtn;
     private JButton undoBtn;
     private JButton replayBtn;
-
+    private JButton upBtn;
+    private JButton downBtn;
+    private JButton leftBtn;
+    private JButton rightBtn;
 
     private JLabel stepLabel;
     private JLabel trailLabel;
     private GamePanel gamePanel;
+    private Clip clickSound;
 
-    public GameFrame(int width, int height, MapMatrix mapMatrix,FrameController frameController) {
+    public GameFrame(int width, int height, MapMatrix mapMatrix, FrameController frameController) {
         this.frameController = frameController;
         this.setTitle("2024 CS109 Project Demo");
         this.setLayout(null);
         this.setSize(width, height);
-        gamePanel = new GamePanel(mapMatrix);//new的同时initiateGame
+        gamePanel = new GamePanel(mapMatrix);
         gamePanel.setLocation(30, height / 2 - gamePanel.getHeight() / 2 - 100);
         this.add(gamePanel);
-        this.controller = new GameController(this,gamePanel, mapMatrix);
-        this.frameController=frameController;
+        this.controller = new GameController(this, gamePanel, mapMatrix);
+        this.frameController = frameController;
 
-        System.out.println("GameFrame: Username = " + frameController.getUser()); // 打印用户名（调试）
+        System.out.println("GameFrame: Username = " + frameController.getUser());
 
-        this.restartBtn = FrameUtil.createButton(this, "Restart", new Point(gamePanel.getWidth() + 80, 120), 80, 50);
-        this.loadBtn = FrameUtil.createButton(this, "Load", new Point(gamePanel.getWidth() + 80, 190), 80, 50);
-        this.returnBtn = FrameUtil.createButton(this, "Return", new Point(gamePanel.getWidth() + 80, 260), 80, 50);
-        this.undoBtn = FrameUtil.createButton(this, "Undo", new Point(gamePanel.getWidth() + 80, 330), 80, 50);
-        this.replayBtn = FrameUtil.createButton(this, "Replay", new Point(gamePanel.getWidth() + 80, 400), 80, 50);
-        this.saveBtn = FrameUtil.createButton(this, "Save", new Point(gamePanel.getWidth() + 80, 470), 80, 50);
-        this.stepLabel = FrameUtil.createJLabel(this, "Step:0", new Font("serif", Font.ITALIC, 22), new Point(gamePanel.getWidth() + 80, 70), 180, 50);
-        this.trailLabel = FrameUtil.createJLabel(this, "Trail", new Font("serif", Font.ITALIC, 22), new Point(gamePanel.getWidth() + 80, 20), 180, 50);
+        initializeAudio();
+
+        Font buttonFont = new Font("Tahoma", Font.BOLD, 15);
+        Font buttonFont1 = new Font("Tahoma", Font.BOLD, 25);
+
+        // Initialize all buttons with consistent styling
+        this.restartBtn = createStyledButton("Restart", new Point(gamePanel.getWidth() + 80, 120), 80, 50, buttonFont);
+        this.loadBtn = createStyledButton("Load", new Point(gamePanel.getWidth() + 80, 190), 80, 50, buttonFont);
+        this.returnBtn = createStyledButton("Return", new Point(gamePanel.getWidth() + 80, 260), 80, 50, buttonFont);
+        this.undoBtn = createStyledButton("Undo", new Point(gamePanel.getWidth() + 80, 330), 80, 50, buttonFont);
+        this.replayBtn = createStyledButton("Replay", new Point(gamePanel.getWidth() + 80, 400), 80, 50, buttonFont);
+        this.saveBtn = createStyledButton("Save", new Point(gamePanel.getWidth() + 80, 470), 80, 50, buttonFont);
+
+        int buttonSize = 70;
+        int centerX = gamePanel.getWidth() - 150;
+        int startY = 530;
+
+        this.upBtn = createStyledButton("↑", new Point(centerX, startY), buttonSize, buttonSize, buttonFont1);
+        this.downBtn = createStyledButton("↓", new Point(centerX, startY + buttonSize), buttonSize, buttonSize, buttonFont1);
+        this.leftBtn = createStyledButton("←", new Point(centerX - buttonSize, startY + buttonSize), buttonSize, buttonSize, buttonFont1);
+        this.rightBtn = createStyledButton("→", new Point(centerX + buttonSize, startY + buttonSize), buttonSize, buttonSize, buttonFont1);
+
+        this.stepLabel = FrameUtil.createJLabel(this, "Step:0", new Font("serif", Font.ITALIC, 22),
+                new Point(gamePanel.getWidth() + 80, 70), 180, 50);
+        this.trailLabel = FrameUtil.createJLabel(this, "Trail", new Font("serif", Font.ITALIC, 22),
+                new Point(gamePanel.getWidth() + 80, 20), 180, 50);
+
         gamePanel.setStepLabel(stepLabel);
         gamePanel.setTrailLabel(trailLabel);
 
-        this.restartBtn.addActionListener(e -> {
-            controller.restartGame();
-            gamePanel.requestFocusInWindow();//enable key listener
-
-        });
-        this.loadBtn.addActionListener(e -> {
-            //String path = JOptionPane.showInputDialog(this, "Input path:");
-            String user=frameController.getUser();
-
-            if (user == null || user.trim().isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Guest Mode user cannot load game.");
-                return; // 阻止加载游戏
-            }
-
-            String path=String.format("resource/%s/level%d.txt",user,frameController.getLevel());
-
-            frameController.loadGame1(path, this);
-
-            System.out.println(path);
-        });
-
-        this.undoBtn.addActionListener(e -> {
-            controller.undo();
-            gamePanel.requestFocusInWindow();//enable key listener
-        });
-
-        this.replayBtn.addActionListener(e -> {
-            controller.startReplay();
-            gamePanel.requestFocusInWindow();//enable key listener
-        });
-
-
-        //todo: add other button here
-        this.returnBtn.addActionListener(e -> {
-            // 获取 LevelFrame 的实例
-            LevelFrame levelFrame = frameController.getLevelFrame();
-            LevelFrame.getFrameController().returnLevelFrame(this);
-            gamePanel.requestFocusInWindow();//enable key listener
-        });
-
-        this.saveBtn.addActionListener(e -> {
-            controller.saveGame();
-            System.out.println("Save successfully!");
-            gamePanel.requestFocusInWindow();
-        });
-
+        addButtonListeners();
 
         initGameLoop();
 
         this.setLocationRelativeTo(null);
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
     }
+
+    private JButton createStyledButton(String text, Point location, int width, int height, Font font) {
+        JButton button = new JButton(text);
+        button.setBounds(location.x, location.y, width, height);
+        button.setFont(font);
+        styleButton(button);
+        this.add(button);
+        return button;
+    }
+
+    private void styleButton(JButton button) {
+        button.setBackground(new Color(255, 223, 186));
+        button.setForeground(Color.BLACK);
+        button.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createBevelBorder(BevelBorder.RAISED),
+                BorderFactory.createEmptyBorder(5, 5, 5, 5)
+        ));
+        button.setFocusPainted(false);
+
+        button.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                button.setBackground(new Color(255, 200, 150));
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                button.setBackground(new Color(255, 223, 186));
+            }
+        });
+    }
+
+    private void initializeAudio() {
+        try {
+            File soundFile = new File("resource/music/click_sound.wav");
+            AudioInputStream audioStream = AudioSystem.getAudioInputStream(soundFile);
+            clickSound = AudioSystem.getClip();
+            clickSound.open(audioStream);
+        } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
+            System.err.println("Error loading audio: " + e.getMessage());
+        }
+    }
+
+    private void playClickSound() {
+        if (clickSound != null) {
+            clickSound.setFramePosition(0);
+            clickSound.start();
+        }
+    }
+
+    private void addButtonListeners() {
+        this.restartBtn.addActionListener(e -> {
+            playClickSound();
+            controller.restartGame();
+            gamePanel.requestFocusInWindow();
+        });
+
+        this.loadBtn.addActionListener(e -> {
+            playClickSound();
+            String user = frameController.getUser();
+            if (user == null || user.trim().isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Guest Mode user cannot load game.");
+                return;
+            }
+            String path = String.format("resource/%s/level%d.txt", user, frameController.getLevel());
+            frameController.loadGame1(path, this);
+            System.out.println(path);
+        });
+
+        this.undoBtn.addActionListener(e -> {
+            playClickSound();
+            controller.undo();
+            gamePanel.requestFocusInWindow();
+        });
+
+        this.replayBtn.addActionListener(e -> {
+            playClickSound();
+            controller.startReplay();
+            gamePanel.requestFocusInWindow();
+        });
+
+        this.returnBtn.addActionListener(e -> {
+            playClickSound();
+            LevelFrame levelFrame = frameController.getLevelFrame();
+            LevelFrame.getFrameController().returnLevelFrame(this);
+            gamePanel.requestFocusInWindow();
+        });
+
+        this.saveBtn.addActionListener(e -> {
+            playClickSound();
+            controller.saveGame();
+            System.out.println("Save successfully!");
+            gamePanel.requestFocusInWindow();
+        });
+
+        this.upBtn.addActionListener(e -> {
+            gamePanel.doMoveUp();
+            gamePanel.requestFocusInWindow();
+        });
+
+        this.downBtn.addActionListener(e -> {
+            gamePanel.doMoveDown();
+            gamePanel.requestFocusInWindow();
+        });
+
+        this.leftBtn.addActionListener(e -> {
+            gamePanel.doMoveLeft();
+            gamePanel.requestFocusInWindow();
+        });
+
+        this.rightBtn.addActionListener(e -> {
+            gamePanel.doMoveRight();
+            gamePanel.requestFocusInWindow();
+        });
+    }
+
     public void updateStepLabel() {
         int steps = gamePanel.getSteps();
         String stepText = String.format("Steps: %d", steps);
-        stepLabel.setText(stepText); // 更新 stepLabel 的文本
+        stepLabel.setText(stepText);
     }
 
     private void initGameLoop() {
@@ -114,7 +214,18 @@ public class GameFrame extends JFrame {
         }).start();
     }
 
-    public FrameController getFrameController() {return frameController;}
-    public GamePanel getGamePanel() {return gamePanel;}
+    public void dispose() {
+        if (clickSound != null) {
+            clickSound.close();
+        }
+        super.dispose();
+    }
 
+    public FrameController getFrameController() {
+        return frameController;
+    }
+
+    public GamePanel getGamePanel() {
+        return gamePanel;
+    }
 }
