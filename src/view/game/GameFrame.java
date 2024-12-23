@@ -42,6 +42,9 @@ public class GameFrame extends JFrame {
     private int seconds=0;
     private JLabel timeLabel;
 
+    //限时模式
+    private int timeLimit = 30;
+
 
     public GameFrame(int width, int height, MapMatrix mapMatrix, FrameController frameController) {
         this.frameController = frameController;
@@ -92,6 +95,13 @@ public class GameFrame extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 seconds++;
                 updateTimeLabel();
+
+                if (seconds >= timeLimit) {
+                    timer.stop();
+                    JOptionPane.showMessageDialog(null, "Time's up! Game Over.");
+                    controller.restartGame();
+                    gamePanel.requestFocusInWindow();//enable key listener
+                }
             }
         });
         timer.start();
@@ -239,13 +249,26 @@ public class GameFrame extends JFrame {
         super.dispose();
     }
 
+    public void setTimeLabel(int time){
+        timeLabel.setText("Time:0");
+    }
+
     //更新计时器标签
     private void updateTimeLabel(){
-        timeLabel.setText("Time:"+seconds);
+        timeLabel.setText("Time:"+seconds+"/"+timeLimit);
     }
     //停止计时器
     public void stopTimer(){
         timer.stop();
+    }
+    public Timer getTimer() {
+        return timer;
+    }
+    public void setSeconds(int seconds) {
+        this.seconds = seconds;
+    }
+    public int getSeconds() {
+        return seconds;
     }
 
 
