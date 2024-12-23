@@ -43,9 +43,8 @@ public class GameFrame extends JFrame {
     private JLabel timeLabel;
 
     //限时模式
-    private int timeLimit = 30;
-
-
+    private final int timeLimit = 30;
+    private boolean timerPaused = false;
     public GameFrame(int width, int height, MapMatrix mapMatrix, FrameController frameController) {
         this.frameController = frameController;
         this.setTitle("2024 CS109 Project Demo");
@@ -73,8 +72,9 @@ public class GameFrame extends JFrame {
         this.saveBtn = createStyledButton("Save", new Point(gamePanel.getWidth() + 80, 470), 80, 50, buttonFont);
 
         int buttonSize = 70;
-        int centerX = gamePanel.getWidth() - 200;
-        int startY = height / 2 - gamePanel.getHeight() / 2+300;
+        int centerX =mapMatrix.getWidth()*40 ;
+        int startY = mapMatrix.getWidth()*50+150;
+
 
         this.upBtn = createStyledButton("↑", new Point(centerX, startY), buttonSize, buttonSize, buttonFont1);
         this.downBtn = createStyledButton("↓", new Point(centerX, startY + buttonSize), buttonSize, buttonSize, buttonFont1);
@@ -93,25 +93,29 @@ public class GameFrame extends JFrame {
         timer=new Timer(1000, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                seconds++;
-                updateTimeLabel();
+                if(!timerPaused){
+                    seconds++;
+                    updateTimeLabel();
 
-                String username=frameController.getUser();
-                if (!(username == null || username.trim().isEmpty())){
-                    if(seconds%10==0){
-                        controller.saveGame(true);
-                        System.out.println("Auto-save successful!");
-                        gamePanel.requestFocusInWindow();
+                    String username=frameController.getUser();
+                    if (!(username == null || username.trim().isEmpty())){
+                        if(seconds%10==0){
+                            controller.saveGame(true);
+                            System.out.println("Auto-save successful!");
+                            gamePanel.requestFocusInWindow();
+                        }
+                    }
+
+                    if (seconds >= timeLimit) {
+                        timer.stop();
+                        JOptionPane.showMessageDialog(null, "Time's up! Game Over.");
+                        controller.restartGame();
+                        seconds = 0;
+                        updateTimeLabel();
+                        timer.start();
+                        gamePanel.requestFocusInWindow();//enable key listener
                     }
                 }
-
-                if (seconds >= timeLimit) {
-                    timer.stop();
-                    JOptionPane.showMessageDialog(null, "Time's up! Game Over.");
-                    controller.restartGame();
-                    gamePanel.requestFocusInWindow();//enable key listener
-                }
-
             }
         });
         timer.start();
@@ -122,6 +126,18 @@ public class GameFrame extends JFrame {
 
         this.setLocationRelativeTo(null);
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+    }
+
+    public void pauseTimer(){
+        timerPaused = true;
+    }
+    public void resumeTimer(){
+        timerPaused = false;
+    }
+
+    public void decrementTime(int amount) {
+        seconds = Math.max(0, seconds - amount);
+        updateTimeLabel();
     }
 
     private JButton createStyledButton(String text, Point location, int width, int height, Font font) {
@@ -195,11 +211,13 @@ public class GameFrame extends JFrame {
         this.undoBtn.addActionListener(e -> {
             playClickSound();
             controller.undo();
+            decrementTime(1);
             gamePanel.requestFocusInWindow();
         });
 
         this.replayBtn.addActionListener(e -> {
             playClickSound();
+            pauseTimer();
             controller.startReplay();
             gamePanel.requestFocusInWindow();
         });
@@ -253,6 +271,9 @@ public class GameFrame extends JFrame {
     }
 
     public void dispose() {
+        if(timer!=null){
+            timer.stop();
+        }
         if (clickSound != null) {
             clickSound.close();
         }
@@ -264,7 +285,7 @@ public class GameFrame extends JFrame {
     }
 
     //更新计时器标签
-    private void updateTimeLabel(){
+    public void updateTimeLabel(){
         timeLabel.setText("Time:"+seconds+"/"+timeLimit);
     }
     //停止计时器
@@ -289,4 +310,5 @@ public class GameFrame extends JFrame {
     public GamePanel getGamePanel() {
         return gamePanel;
     }
+
 }

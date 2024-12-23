@@ -10,6 +10,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.List;
 
 public class ReplayWindow extends JFrame {
     private GamePanel gamePanel;
@@ -20,13 +21,16 @@ public class ReplayWindow extends JFrame {
     private boolean isPlaying;
     private int replaySpeed = 800;
     private JLabel positionLabel;
+    private JLabel timeLabel;
     private JButton playPauseButton;
     private SoundEffect stepSound;
+    private List<Integer> timeRecords;
 
     public ReplayWindow(MapMatrix model, GameController gameController) {
         this.gameController = gameController;
         this.currentPosition = 0;
         this.isPlaying = false;
+        this.timeRecords = gameController.getTimeRecords();
         stepSound=new SoundEffect("resource/music/move.wav");
 
         initializeWindow();
@@ -37,7 +41,7 @@ public class ReplayWindow extends JFrame {
 
     private void initializeWindow() {
         setTitle("Game Replay");
-        setSize(800, 500);
+        setSize(800, 600);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
         setLayout(new BorderLayout(10, 10));
@@ -60,9 +64,14 @@ public class ReplayWindow extends JFrame {
         positionLabel.setFont(new Font("serif", Font.ITALIC, 22));
         positionLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
+        timeLabel = new JLabel("Time: 0s");
+        timeLabel.setFont(new Font("serif", Font.ITALIC, 22));
+        timeLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
         infoPanel.add(Box.createVerticalStrut(10));
         infoPanel.add(Box.createVerticalStrut(10));
         infoPanel.add(positionLabel);
+        infoPanel.add(timeLabel);
 
         mainPanel.add(infoPanel, BorderLayout.EAST);
         add(mainPanel, BorderLayout.CENTER);
@@ -159,6 +168,8 @@ public class ReplayWindow extends JFrame {
             gamePanel.setModel(currentState);
             gamePanel.updateview();
             positionLabel.setText(String.format("Position: %d", position));
+            int timeAtPosition = timeRecords.get(position);
+            timeLabel.setText(String.format("Time: %ds", timeAtPosition));
         }
     }
 
@@ -174,13 +185,25 @@ public class ReplayWindow extends JFrame {
         dispose();
 
         java.util.List<int[][]> newMaps = new ArrayList<>();
+        List<Integer> newTimeRecords = new ArrayList<>();
         for (int i = 0; i <= currentPosition; i++) {
             newMaps.add(MapMatrix.copyArray(gameController.getMaps().get(i)));
+            newTimeRecords.add(timeRecords.get(i));
         }
 
+        // 更新游戏控制器中的状态
         gameController.getMaps().clear();
         gameController.getMaps().addAll(newMaps);
+        gameController.getTimeRecords().clear();
+        gameController.getTimeRecords().addAll(newTimeRecords);
 
+        // 恢复时间和游戏状态
+        int timeAtPosition = timeRecords.get(currentPosition);
+        gameController.getFrame().setSeconds(timeAtPosition);
+        gameController.getFrame().updateTimeLabel();
+        gameController.getFrame().resumeTimer();
+
+        // 更新游戏面板
         gameController.startGameFromCurrentModel(gamePanel.getModel(), currentPosition);
     }
 }

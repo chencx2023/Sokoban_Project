@@ -21,6 +21,8 @@ public class MapMatrix {
     int[][] matrix;
 
     private final int[][] initialMatrix; //used to restartGame
+    private boolean isTimerMode;
+    private int timeLimit;
 
     public int[][] getInitialMatrix() {
         return initialMatrix;

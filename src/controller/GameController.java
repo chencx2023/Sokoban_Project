@@ -38,6 +38,7 @@ public class GameController {
     private final GameFrame frame;
 //    private final LevelFrame levelFrame = new LevelFrame(650,200);
     private final List<int[][]> maps = new ArrayList<>();
+    private final List<Integer> timeRecords = new ArrayList<>();
     private ReplayWindow replayWindow;
     FileUtil fileUtil=new FileUtil();
 
@@ -49,6 +50,10 @@ public class GameController {
         return maps;
     }
 
+    public GameFrame getFrame() {
+        return frame;
+    }
+
     private boolean haswon = false;
     private boolean haslosed = false;
 
@@ -58,8 +63,10 @@ public class GameController {
         this.view = view;
         this.model = model;
         maps.add(MapMatrix.copyArray(model.getMatrix()));
+        timeRecords.add(0);
         view.setController(this);
     }
+
 
     public void restartGame() {
         //ToDo: reset model & view
@@ -70,6 +77,7 @@ public class GameController {
         this.view.restartGame();
         maps.clear();
         maps.add(model.getInitialMatrix());
+        timeRecords.add(0);
         frame.setSeconds(0);
         frame.getTimer().stop();
         frame.getTimer().restart();
@@ -83,6 +91,7 @@ public class GameController {
     }
 
     public boolean doMove(int row, int col, Direction direction) {
+        boolean moved = false;
         GridComponent currentGrid = view.getGridComponent(row, col);
         //目标位置的行列
         int tRow = row + direction.getRow();
@@ -105,7 +114,7 @@ public class GameController {
                 portalBGrid.setHeroInGrid(h);
                 h.setRow(portalB[0]);
                 h.setCol(portalB[1]);
-                return true;
+                moved = true;
             }
         }
 
@@ -117,7 +126,7 @@ public class GameController {
             targetGrid.setHeroInGrid(h);
             h.setRow(tRow);
             h.setCol(tCol);
-            return true;
+            moved=true;
         }
 
         // 处理推箱子的情况
@@ -144,7 +153,7 @@ public class GameController {
                     h.setCol(tCol);
                     b.setRow(portalB[0]);
                     b.setCol(portalB[1]);
-                    return true;
+                    moved =true;
                 }
             }
             // 原有的推箱子逻辑
@@ -161,10 +170,13 @@ public class GameController {
                 h.setCol(tCol);
                 b.setRow(ttRow);
                 b.setCol(ttCol);
-                return true;
+                moved=true;
             }
         }
-        return false;
+        if(moved){
+            timeRecords.add(frame.getSeconds());
+        }
+        return moved;
     }
 
     // 辅助方法：检查是否是传送门A
@@ -194,12 +206,17 @@ public class GameController {
             maps.subList(maps.size() - 1, maps.size()).clear();
             int[][] previous = MapMatrix.copyArray(maps.get(maps.size()-1));
             model.setMatrix(previous);
+            int previousTime = timeRecords.get(timeRecords.size() - 1);
+            frame.setSeconds(previousTime);
+            frame.updateTimeLabel();
             view.ResetGamePanel();
         }
         else {
             Toast.displayToast("This has been the first step\nCan't undo anymore!",300);
             maps.clear();
+            timeRecords.clear();
             maps.add(MapMatrix.copyArray(model.getInitialMatrix()));
+            timeRecords.add(0);
         }
     }
 
@@ -469,4 +486,7 @@ public class GameController {
     }
 
     //todo: add other methods such as loadGame, saveGame...
+     public List<Integer> getTimeRecords() {
+            return timeRecords;
+        }
 }
