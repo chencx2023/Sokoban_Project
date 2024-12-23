@@ -80,41 +80,109 @@ public class GameController {
 
     public boolean doMove(int row, int col, Direction direction) {
         GridComponent currentGrid = view.getGridComponent(row, col);
-        //target row can column.
+        //目标位置的行列
         int tRow = row + direction.getRow();
         int tCol = col + direction.getCol();
         int ttRow = tRow + direction.getRow();
         int ttCol = tCol + direction.getCol();
         GridComponent targetGrid = view.getGridComponent(tRow, tCol);
         int[][] map = model.getMatrix();
+
+        // 检查是否是传送门
+        if (isPortalA(tRow, tCol)) {
+            // 找到对应的传送门B的位置
+            int[] portalB = findPortalB(map);
+            if (portalB != null) {
+                // 更新玩家位置到传送门B
+                model.getMatrix()[row][col] -= 20;
+                model.getMatrix()[portalB[0]][portalB[1]] += 20;
+                Hero h = currentGrid.removeHeroFromGrid();
+                GridComponent portalBGrid = view.getGridComponent(portalB[0], portalB[1]);
+                portalBGrid.setHeroInGrid(h);
+                h.setRow(portalB[0]);
+                h.setCol(portalB[1]);
+                return true;
+            }
+        }
+
+        // 原有的移动逻辑
         if (map[tRow][tCol] == 0 || map[tRow][tCol] == 2) {
-            //update hero in MapMatrix
             model.getMatrix()[row][col] -= 20;
             model.getMatrix()[tRow][tCol] += 20;
-            //Update hero in GamePanel
             Hero h = currentGrid.removeHeroFromGrid();
             targetGrid.setHeroInGrid(h);
-            //Update the row and column attribute in hero
             h.setRow(tRow);
             h.setCol(tCol);
             return true;
         }
-        if ((map[tRow][tCol] == 10 || map[tRow][tCol] == 12) && (map[ttRow][ttCol] == 0 || map[ttRow][ttCol] == 2)){
-            GridComponent ttargetGrid = view.getGridComponent(ttRow, ttCol);
-            model.getMatrix()[row][col] -= 20;
-            model.getMatrix()[tRow][tCol] += 10;
-            model.getMatrix()[ttRow][ttCol] += 10;
-            Hero h = currentGrid.removeHeroFromGrid();
-            targetGrid.setHeroInGrid(h);
-            Box b = targetGrid.removeBoxFromGrid();
-            ttargetGrid.setBoxInGrid(b);
-            h.setRow(tRow);
-            h.setCol(tCol);
-            b.setRow(ttRow);
-            b.setCol(ttCol);
-            return true;
+
+        // 处理推箱子的情况
+        if ((map[tRow][tCol] == 10 || map[tRow][tCol] == 12)) {
+            // 检查箱子前面是否是传送门A
+            if (isPortalA(ttRow, ttCol)) {
+                int[] portalB = findPortalB(map);
+                if (portalB != null && isValidBoxDestination(map, portalB[0], portalB[1])) {
+                    // 通过传送门移动箱子
+                    model.getMatrix()[row][col] -= 20;
+                    model.getMatrix()[tRow][tCol] += 20;
+                    model.getMatrix()[tRow][tCol] -= 10;
+                    model.getMatrix()[portalB[0]][portalB[1]] += 10;
+
+                    // 更新UI
+                    Hero h = currentGrid.removeHeroFromGrid();
+                    targetGrid.setHeroInGrid(h);
+                    Box b = targetGrid.removeBoxFromGrid();
+                    GridComponent portalBGrid = view.getGridComponent(portalB[0], portalB[1]);
+                    portalBGrid.setBoxInGrid(b);
+
+                    // 更新位置属性
+                    h.setRow(tRow);
+                    h.setCol(tCol);
+                    b.setRow(portalB[0]);
+                    b.setCol(portalB[1]);
+                    return true;
+                }
+            }
+            // 原有的推箱子逻辑
+            else if (map[ttRow][ttCol] == 0 || map[ttRow][ttCol] == 2) {
+                GridComponent ttargetGrid = view.getGridComponent(ttRow, ttCol);
+                model.getMatrix()[row][col] -= 20;
+                model.getMatrix()[tRow][tCol] += 10;
+                model.getMatrix()[ttRow][ttCol] += 10;
+                Hero h = currentGrid.removeHeroFromGrid();
+                targetGrid.setHeroInGrid(h);
+                Box b = targetGrid.removeBoxFromGrid();
+                ttargetGrid.setBoxInGrid(b);
+                h.setRow(tRow);
+                h.setCol(tCol);
+                b.setRow(ttRow);
+                b.setCol(ttCol);
+                return true;
+            }
         }
         return false;
+    }
+
+    // 辅助方法：检查是否是传送门A
+    private boolean isPortalA(int row, int col) {
+        return (model.getMatrix()[row][col] % 10) == 5;
+    }
+
+    // 辅助方法：在地图中查找传送门B的位置
+    private int[] findPortalB(int[][] map) {
+        for (int i = 0; i < map.length; i++) {
+            for (int j = 0; j < map[i].length; j++) {
+                if ((map[i][j] % 10) == 6) {  // 6代表传送门B
+                    return new int[]{i, j};
+                }
+            }
+        }
+        return null;
+    }
+
+    // 辅助方法：检查箱子传送后的目标位置是否有效
+    private boolean isValidBoxDestination(int[][] map, int row, int col) {
+        return map[row][col] == 0 || map[row][col] == 2;
     }
 
     public void undo(){
@@ -217,7 +285,7 @@ public class GameController {
         // Case 1: Check boxes stuck in corners
         for (int i = 0; i < w; i++) {
             for (int j = 0; j < h; j++) {
-                if (a[i][j] == 10 || a[i][j] == 12) { // Box or box on target
+                if (a[i][j] == 10 ) { // Box or box on target
                     // Check for corner traps
                     if ((a[i - 1][j] == 1 && a[i][j - 1] == 1) ||
                             (a[i + 1][j] == 1 && a[i][j + 1] == 1) ||
