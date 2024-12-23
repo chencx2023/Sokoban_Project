@@ -2,6 +2,7 @@ package controller;
 
 import controller.GameController;
 import model.MapMatrix;
+import util.SoundEffect;
 import view.game.GamePanel;
 
 import javax.swing.*;
@@ -20,11 +21,13 @@ public class ReplayWindow extends JFrame {
     private int replaySpeed = 800;
     private JLabel positionLabel;
     private JButton playPauseButton;
+    private SoundEffect stepSound;
 
     public ReplayWindow(MapMatrix model, GameController gameController) {
         this.gameController = gameController;
         this.currentPosition = 0;
         this.isPlaying = false;
+        stepSound=new SoundEffect("resource/music/move.wav");
 
         initializeWindow();
         MapMatrix m1 =new MapMatrix(gameController.getMaps().get(0));
@@ -129,6 +132,7 @@ public class ReplayWindow extends JFrame {
         }
         replayTimer = new Timer(replaySpeed, e -> {
             if (currentPosition < gameController.getMaps().size() - 1) {
+                stepSound.play();
                 currentPosition++;
                 updateToPosition(currentPosition);
                 replaySlider.setValue(currentPosition);

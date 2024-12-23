@@ -208,78 +208,70 @@ public class GameController {
         }
     }
 
-    public void checklose(){    //只考虑箱子是否无法移动的情况
+    public void checklose() {
         boolean islose = false;
         int[][] a = model.getMatrix();
         int w = a.length;
         int h = a[0].length;
+
+        // Case 1: Check boxes stuck in corners
         for (int i = 0; i < w; i++) {
             for (int j = 0; j < h; j++) {
-                if (a[i][j] == 10){ //此处是箱子
-                    //如果箱子临近有两个边界
-                    if((a[i-1][j] ==1 && a[i][j-1]==1) || (a[i+1][j] == 1 && a[i][j+1] == 1) || (a[i-1][j] == 1 && a[i][j+1] == 1) || (a[i][j-1] == 1 && a[i+1][j] == 1)){
+                if (a[i][j] == 10 || a[i][j] == 12) { // Box or box on target
+                    // Check for corner traps
+                    if ((a[i - 1][j] == 1 && a[i][j - 1] == 1) ||
+                            (a[i + 1][j] == 1 && a[i][j + 1] == 1) ||
+                            (a[i - 1][j] == 1 && a[i][j + 1] == 1) ||
+                            (a[i][j - 1] == 1 && a[i + 1][j] == 1)) {
                         islose = true;
                     }
+
                 }
             }
         }
+        if (islose && !haslosed && !haswon) {
+            handleLoseCondition();
+        }
+    }
+    private void handleLoseCondition() {
+        haslosed = true;
+        try {
+            // Load and resize the expression image
+            File file = new File("resource/pictures/expression.png");
+            BufferedImage originalImage = ImageIO.read(file);
+            BufferedImage resizedImage = new BufferedImage(49, 49, originalImage.getTransparency());
+            Graphics2D g2d = resizedImage.createGraphics();
+            g2d.drawImage(originalImage, 0, 0, 49, 49, null);
+            g2d.dispose();
 
-        if (islose && !haslosed && !haswon){
-            haslosed = true;
-            try {
-                // 摘取对图片进行缩放操作
-                // 加载原始图像文件
-                File file = new File("resource/pictures/expression.png");
-                BufferedImage originalImage = ImageIO.read(file);
+            ImageIcon expressionIcon = new ImageIcon(resizedImage);
+            String message = "Box is in an unsolvable position!\nYou lost!";
+            String title = "Game Over";
 
-                // 创建一个新的BufferedImage对象，具有所需的尺寸
-                int width = 49;  // 新的宽度
-                int height = 49; // 新的高度
-                BufferedImage resizedImage = new BufferedImage(width, height, originalImage.getTransparency());
+            Font customFont = new Font("Comic Sans MS", Font.BOLD, 16);
+            JTextArea textArea = new JTextArea(message);
+            textArea.setFont(customFont);
+            textArea.setEditable(false);
+            textArea.setBackground(frame.getBackground());
 
-                // 绘制原始图像到新的BufferedImage对象，实现缩放
-                Graphics2D g2d = resizedImage.createGraphics();
-                g2d.drawImage(originalImage, 0, 0, width, height, null);
-                g2d.dispose();
+            String[] options = {"Continue", "Restart"};
 
-                // 创建一个新的ImageIcon对象，使用调整大小后的图像
-                ImageIcon expressionIcon = new ImageIcon(resizedImage);
+            int choice = JOptionPane.showOptionDialog(
+                    frame,
+                    new JScrollPane(textArea),
+                    title,
+                    JOptionPane.DEFAULT_OPTION,
+                    JOptionPane.WARNING_MESSAGE,
+                    expressionIcon,
+                    options,
+                    options[0]
+            );
 
-                String message = "Box can't be moved\nYou losed!";
-                String title = "Game Over";
-
-                //修改message字体
-                Font customFont = new Font("Comic Sans MS", Font.BOLD, 16);
-                JTextArea textArea = new JTextArea(message);
-                textArea.setFont(customFont); // 设置字体为 Serif，粗体，大小为 16
-                textArea.setEditable(false);  // 设置文本不可编辑
-                textArea.setBackground(frame.getBackground()); // 可选：设置背景色与 JFrame 一致
-
-                // 自定义按钮选项
-                String[] options = {"Continue", "Restart"};
-
-                // 显示选项对话框，返回用户选择的按钮索引
-                int choice = JOptionPane.showOptionDialog(
-                        frame,
-                        new JScrollPane(textArea),
-                        title,
-                        JOptionPane.DEFAULT_OPTION,
-                        JOptionPane.WARNING_MESSAGE,
-                        expressionIcon,
-                        options,
-                        options[0] // 默认选中 "Continue"
-                );
-
-                // 根据用户选择执行不同操作
-                if (choice == 1) {
-                    restartGame(); // 调用重新开始的方法
-                }
-                // 显示消息对话框，并使用自定义的笑脸图标
-
-            } catch (Exception e) {
-                e.printStackTrace();
+            if (choice == 1) {
+                restartGame();
             }
-
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
