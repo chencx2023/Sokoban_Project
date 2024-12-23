@@ -96,12 +96,22 @@ public class GameFrame extends JFrame {
                 seconds++;
                 updateTimeLabel();
 
+                String username=frameController.getUser();
+                if (!(username == null || username.trim().isEmpty())){
+                    if(seconds%10==0){
+                        controller.saveGame(true);
+                        System.out.println("Auto-save successful!");
+                        gamePanel.requestFocusInWindow();
+                    }
+                }
+
                 if (seconds >= timeLimit) {
                     timer.stop();
                     JOptionPane.showMessageDialog(null, "Time's up! Game Over.");
                     controller.restartGame();
                     gamePanel.requestFocusInWindow();//enable key listener
                 }
+
             }
         });
         timer.start();
@@ -203,7 +213,7 @@ public class GameFrame extends JFrame {
 
         this.saveBtn.addActionListener(e -> {
             playClickSound();
-            controller.saveGame();
+            controller.saveGame(false);
             System.out.println("Save successfully!");
             gamePanel.requestFocusInWindow();
         });
