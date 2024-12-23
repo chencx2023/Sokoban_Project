@@ -136,7 +136,7 @@ public class FrameController {
         }
         //turn array to mapMatrix model
         MapMatrix mapMatrix=new MapMatrix(map);
-        GameFrame gameFrame=new GameFrame(600, 800, mapMatrix,this);
+        GameFrame gameFrame=new GameFrame(700, 700, mapMatrix,this);
         gameFrame.getGamePanel().setSteps(Integer.parseInt(lines.get(lines.size()-1)));
         gameFrame.updateStepLabel();
         gameFrame.setVisible(true);
@@ -203,7 +203,7 @@ public class FrameController {
 
     public void loadGame(String path) {
         MapMatrix mapMatrix=new MapMatrix(loadmatrix(path));
-        GameFrame gameFrame=new GameFrame(800, 800, mapMatrix,this);
+        GameFrame gameFrame=new GameFrame(700, 700, mapMatrix,this);
         gameFrame.setVisible(true);
     }
 

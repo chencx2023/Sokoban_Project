@@ -73,8 +73,8 @@ public class GameFrame extends JFrame {
         this.saveBtn = createStyledButton("Save", new Point(gamePanel.getWidth() + 80, 470), 80, 50, buttonFont);
 
         int buttonSize = 70;
-        int centerX = gamePanel.getWidth() - 150;
-        int startY = 530;
+        int centerX = gamePanel.getWidth() - 200;
+        int startY = height / 2 - gamePanel.getHeight() / 2+300;
 
         this.upBtn = createStyledButton("↑", new Point(centerX, startY), buttonSize, buttonSize, buttonFont1);
         this.downBtn = createStyledButton("↓", new Point(centerX, startY + buttonSize), buttonSize, buttonSize, buttonFont1);
