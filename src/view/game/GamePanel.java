@@ -33,7 +33,7 @@ public class GamePanel extends ListenerPanel {
 
     private int steps;
     private int trail = 0;
-    private final int GRID_SIZE = 50;
+    private final int GRID_SIZE = 70;
     private Hero hero;
 
     public GamePanel(MapMatrix model) {

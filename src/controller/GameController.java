@@ -390,7 +390,7 @@ public class GameController {
         }
     }
 
-    public void saveGame() {
+    public void saveGame(boolean isAutoSave) {
         // 获取用户名和关卡名，用于生成文件名
         String username = frame.getFrameController().getUser();
         int level= frame.getFrameController().getLevel();
@@ -459,7 +459,9 @@ public class GameController {
         try {
             fileUtil.writeFileFromList(path, lines);
             System.out.println("Game saved to file: " + path);
-            JOptionPane.showMessageDialog(frame, "Game saved successfully!");
+            if(!isAutoSave){
+                JOptionPane.showMessageDialog(frame, "Game saved successfully!");
+            }
         } catch (Exception e) {
             System.out.println("Failed to save game: " + e.getMessage());
             JOptionPane.showMessageDialog(frame, "Failed to save game: " + e.getMessage());

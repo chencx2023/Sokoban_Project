@@ -21,8 +21,8 @@ public class LoginSelectionFrame extends JFrame {
         this.setSize(width, height);
         this.frameController = frameController;
 
-        guestBtn = FrameUtil.createButton(this, "Guest", new Point(20, 140), 100, 40);
-        loginBtn = FrameUtil.createButton(this, "Login", new Point(150, 140), 100, 40);
+        guestBtn = FrameUtil.createButton(this, "Guest", new Point(40, 140), 100, 40);
+        loginBtn = FrameUtil.createButton(this, "Login", new Point(170, 140), 100, 40);
 
         guestBtn.addActionListener(e -> {
             frameController.showLevelFrame();
