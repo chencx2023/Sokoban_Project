@@ -54,6 +54,7 @@ public class GamePanel extends ListenerPanel {
         this.trailLabel = trailLabel;
     }
 
+
     public void initialGame() {
         this.steps = 0;
         for (int i = 0; i < grids.length; i++) {

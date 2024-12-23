@@ -15,6 +15,9 @@ import model.MapMatrix;
 import view.FrameUtil;
 import view.level.LevelFrame;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 public class GameFrame extends JFrame {
 
     private GameController controller;
@@ -34,6 +37,14 @@ public class GameFrame extends JFrame {
     private JLabel trailLabel;
     private GamePanel gamePanel;
     private Clip clickSound;
+
+    private Timer timer;
+    private int seconds=0;
+    private JLabel timeLabel;
+
+    //限时模式
+    private int timeLimit = 30;
+
 
     public GameFrame(int width, int height, MapMatrix mapMatrix, FrameController frameController) {
         this.frameController = frameController;
@@ -77,6 +88,23 @@ public class GameFrame extends JFrame {
 
         gamePanel.setStepLabel(stepLabel);
         gamePanel.setTrailLabel(trailLabel);
+
+        this.timeLabel=FrameUtil.createJLabel(this, "Time:0", new Font("serif", Font.ITALIC, 22), new Point(gamePanel.getWidth() + 80, 600), 180, 50);
+        timer=new Timer(1000, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                seconds++;
+                updateTimeLabel();
+
+                if (seconds >= timeLimit) {
+                    timer.stop();
+                    JOptionPane.showMessageDialog(null, "Time's up! Game Over.");
+                    controller.restartGame();
+                    gamePanel.requestFocusInWindow();//enable key listener
+                }
+            }
+        });
+        timer.start();
 
         addButtonListeners();
 
@@ -220,6 +248,29 @@ public class GameFrame extends JFrame {
         }
         super.dispose();
     }
+
+    public void setTimeLabel(int time){
+        timeLabel.setText("Time:0");
+    }
+
+    //更新计时器标签
+    private void updateTimeLabel(){
+        timeLabel.setText("Time:"+seconds+"/"+timeLimit);
+    }
+    //停止计时器
+    public void stopTimer(){
+        timer.stop();
+    }
+    public Timer getTimer() {
+        return timer;
+    }
+    public void setSeconds(int seconds) {
+        this.seconds = seconds;
+    }
+    public int getSeconds() {
+        return seconds;
+    }
+
 
     public FrameController getFrameController() {
         return frameController;

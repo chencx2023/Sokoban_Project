@@ -41,6 +41,7 @@ public class GameController {
     private ReplayWindow replayWindow;
     FileUtil fileUtil=new FileUtil();
 
+
     public GamePanel getView() {
         return view;
     }
@@ -69,6 +70,9 @@ public class GameController {
         this.view.restartGame();
         maps.clear();
         maps.add(model.getInitialMatrix());
+        frame.setSeconds(0);
+        frame.getTimer().stop();
+        frame.getTimer().restart();
     }
 
     public void startGameFromCurrentModel(MapMatrix mapMatrix, int step){
