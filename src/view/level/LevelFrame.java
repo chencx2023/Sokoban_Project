@@ -10,7 +10,7 @@ public class LevelFrame extends JFrame {
     private static FrameController frameController = new FrameController();
     public static final List<int[][]> levels = new ArrayList<>();
     private static final String LEVELS_PATH = "resource/level/level";
-    private static final int NUM_LEVELS = 14;
+    private static final int NUM_LEVELS = 13;
 
     static {
         for (int i = 1; i <= NUM_LEVELS; i++) {
@@ -49,7 +49,7 @@ public class LevelFrame extends JFrame {
 
         DefaultComboBoxModel<String> model3 = new DefaultComboBoxModel<>();
         model3.addElement("Special Level");
-        for (int i = 11; i <= 14; i++) {
+        for (int i = 11; i <= 13; i++) {
             model3.addElement("Level " + i);
         }
         JComboBox<String> levelDropdown2 = new JComboBox<>(model3);
