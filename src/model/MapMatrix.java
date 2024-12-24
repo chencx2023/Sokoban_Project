@@ -28,9 +28,11 @@ public class MapMatrix {
         return initialMatrix;
     }
 
-    public MapMatrix(int[][] matrix) {
+    public MapMatrix(int[][] matrix, boolean isTimerMode, int timeLimit) {
         this.matrix = matrix;
         initialMatrix=copyArray(matrix);
+        this.isTimerMode = isTimerMode;
+        this.timeLimit = timeLimit;
     }
 
     public static int[][] copyArray(int[][] a){
@@ -60,6 +62,14 @@ public class MapMatrix {
 
     public void setMatrix(int[][] matrix) {
         this.matrix = matrix;
+    }
+
+    public int getTimeLimit() {
+        return timeLimit;
+    }
+
+    public boolean isTimerMode() {
+        return isTimerMode;
     }
 
     public int[][] getMatrix() {

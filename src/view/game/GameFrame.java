@@ -43,7 +43,7 @@ public class GameFrame extends JFrame {
     private JLabel timeLabel;
 
     //限时模式
-    private final int timeLimit = 30;
+    private int timeLimit ;
     private boolean timerPaused = false;
     public GameFrame(int width, int height, MapMatrix mapMatrix, FrameController frameController) {
         this.frameController = frameController;
@@ -55,6 +55,7 @@ public class GameFrame extends JFrame {
         this.add(gamePanel);
         this.controller = new GameController(this, gamePanel, mapMatrix);
         this.frameController = frameController;
+        timeLimit =mapMatrix.getTimeLimit();
 
         System.out.println("GameFrame: Username = " + frameController.getUser());
 
@@ -72,8 +73,8 @@ public class GameFrame extends JFrame {
         this.saveBtn = createStyledButton("Save", new Point(gamePanel.getWidth() + 80, 470), 80, 50, buttonFont);
 
         int buttonSize = 70;
-        int centerX =mapMatrix.getWidth()*40 ;
-        int startY = mapMatrix.getWidth()*50+150;
+        int centerX =gamePanel.getX() + gamePanel.getWidth() / 2;
+        int startY = gamePanel.getY() + gamePanel.getHeight() + 20;
 
 
         this.upBtn = createStyledButton("↑", new Point(centerX, startY), buttonSize, buttonSize, buttonFont1);
@@ -89,6 +90,19 @@ public class GameFrame extends JFrame {
         gamePanel.setStepLabel(stepLabel);
         gamePanel.setTrailLabel(trailLabel);
 
+        if (mapMatrix.isTimerMode()) {
+            initializeTimerComponents(mapMatrix.getTimeLimit());
+        }
+
+        addButtonListeners();
+
+        initGameLoop();
+
+        this.setLocationRelativeTo(null);
+        this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+    }
+
+    public void initializeTimerComponents(int timeLimit) {
         this.timeLabel=FrameUtil.createJLabel(this, "Time:0", new Font("serif", Font.ITALIC, 22), new Point(gamePanel.getWidth() + 80, 600), 180, 50);
         timer=new Timer(1000, new ActionListener() {
             @Override
@@ -119,13 +133,6 @@ public class GameFrame extends JFrame {
             }
         });
         timer.start();
-
-        addButtonListeners();
-
-        initGameLoop();
-
-        this.setLocationRelativeTo(null);
-        this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
     }
 
     public void pauseTimer(){
