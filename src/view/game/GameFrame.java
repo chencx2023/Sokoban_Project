@@ -43,7 +43,7 @@ public class GameFrame extends JFrame {
     private JLabel timeLabel;
 
     //限时模式
-    private final int timeLimit = 30;
+    private int timeLimit ;
     private boolean timerPaused = false;
     public GameFrame(int width, int height, MapMatrix mapMatrix, FrameController frameController) {
         this.frameController = frameController;
@@ -55,6 +55,7 @@ public class GameFrame extends JFrame {
         this.add(gamePanel);
         this.controller = new GameController(this, gamePanel, mapMatrix);
         this.frameController = frameController;
+        timeLimit =mapMatrix.getTimeLimit();
 
         System.out.println("GameFrame: Username = " + frameController.getUser());
 
