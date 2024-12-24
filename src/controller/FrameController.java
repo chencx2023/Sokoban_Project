@@ -135,7 +135,7 @@ public class FrameController {
             }
         }
         //turn array to mapMatrix model
-        MapMatrix mapMatrix=new MapMatrix(map);
+        MapMatrix mapMatrix=new MapMatrix(map,false,-1);
         GameFrame gameFrame=new GameFrame(800, 750, mapMatrix,this);
         gameFrame.getGamePanel().setSteps(Integer.parseInt(lines.get(lines.size()-1)));
         gameFrame.updateStepLabel();
@@ -143,7 +143,7 @@ public class FrameController {
         gameFrame.getGamePanel().requestFocusInWindow();
     }
 
-    public int[][] loadmatrix(String path) {
+    public MapMatrix loadmatrix(String path) {
         List<String> lines;
         try {
             lines = Files.readAllLines(Paths.get(path));
@@ -155,32 +155,80 @@ public class FrameController {
             throw new IllegalArgumentException("The file is empty or invalid: " + path);
         }
 
-        int[][] map = new int[lines.size()][];
+        // 读取模式配置
+        boolean isTimerMode = false;
+        int timeLimit = -1;
+        int startIndex = 0;
+
+        // 检查配置行
+        for (int i = 0; i < lines.size(); i++) {
+            String line = lines.get(i).toLowerCase().trim();
+            if (line.isEmpty()) {
+                continue;
+            }
+            if (line.startsWith("mode=")) {
+                isTimerMode = line.equals("mode=timer");
+                startIndex = i + 1;
+            } else if (line.startsWith("timelimit=")) {
+                try {
+                    timeLimit = Integer.parseInt(line.split("=")[1].trim());
+                    startIndex = i + 1;
+                } catch (NumberFormatException e) {
+                    throw new IllegalArgumentException("Invalid time limit format");
+                }
+            } else if (!line.contains("=")) {
+                break; // 遇到第一个非配置行，结束配置读取
+            }
+        }
+
+        // 计算实际地图大小（排除配置行和空行）
+        int mapRows = 0;
         int expectedLength = -1;
 
-        for (int i = 0; i < lines.size(); i++) {
+        for (int i = startIndex; i < lines.size(); i++) {
             String line = lines.get(i).trim();
             if (line.isEmpty()) {
-                continue; // 跳过空行
+                continue;
             }
-
             String[] elements = line.split("\\s+");
             if (expectedLength == -1) {
-                expectedLength = elements.length; // 设置第一行的长度为期望长度
+                expectedLength = elements.length;
             } else if (elements.length != expectedLength) {
                 throw new IllegalArgumentException("Inconsistent row lengths in the file at line " + (i + 1));
             }
+            mapRows++;
+        }
 
-            map[i] = new int[elements.length];
+        // 创建地图数组
+        int[][] map = new int[mapRows][];
+        int currentRow = 0;
+
+        // 读取地图数据
+        for (int i = startIndex; i < lines.size(); i++) {
+            String line = lines.get(i).trim();
+            if (line.isEmpty()) {
+                continue;
+            }
+
+            String[] elements = line.split("\\s+");
+            map[currentRow] = new int[elements.length];
+
             for (int j = 0; j < elements.length; j++) {
                 try {
-                    map[i][j] = Integer.parseInt(elements[j]);
+                    map[currentRow][j] = Integer.parseInt(elements[j]);
                 } catch (NumberFormatException e) {
-                    throw new IllegalArgumentException("Invalid number format at line " + (i + 1) + ", column " + (j + 1) + ": '" + elements[j] + "'");
+                    throw new IllegalArgumentException("Invalid number format at line " + (i + 1) +
+                            ", column " + (j + 1) + ": '" + elements[j] + "'");
                 }
             }
+            currentRow++;
         }
-        return map;
+
+        // 验证计时模式的设置
+        if (isTimerMode && timeLimit <= 0) {
+            throw new IllegalArgumentException("Timer mode requires a positive time limit");
+        }
+        return new MapMatrix(map,isTimerMode,timeLimit);
     }
     public void setLoginFrame(LoginFrame loginFrame) {
         this.loginFrame=loginFrame;
@@ -202,8 +250,7 @@ public class FrameController {
     }
 
     public void loadGame(String path) {
-        MapMatrix mapMatrix=new MapMatrix(loadmatrix(path));
-        GameFrame gameFrame=new GameFrame(800, 750, mapMatrix,this);
+        GameFrame gameFrame=new GameFrame(800, 750, loadmatrix(path),this);
         gameFrame.setVisible(true);
     }
 

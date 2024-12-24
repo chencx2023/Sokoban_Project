@@ -25,16 +25,22 @@ public class ReplayWindow extends JFrame {
     private JButton playPauseButton;
     private SoundEffect stepSound;
     private List<Integer> timeRecords;
+    private boolean isTimermode=false;
+    private int timelimit=-1;
 
     public ReplayWindow(MapMatrix model, GameController gameController) {
         this.gameController = gameController;
         this.currentPosition = 0;
         this.isPlaying = false;
-        this.timeRecords = gameController.getTimeRecords();
+        isTimermode=model.isTimerMode();
+        timelimit=model.getTimeLimit();
+        if(isTimermode){
+            this.timeRecords = gameController.getTimeRecords();
+        }
         stepSound=new SoundEffect("resource/music/move.wav");
 
         initializeWindow();
-        MapMatrix m1 =new MapMatrix(gameController.getMaps().get(0));
+        MapMatrix m1 =new MapMatrix(gameController.getMaps().get(0),isTimermode,timelimit);
         initializeGamePanel(m1);
         initializeControls();
     }
@@ -64,14 +70,18 @@ public class ReplayWindow extends JFrame {
         positionLabel.setFont(new Font("serif", Font.ITALIC, 22));
         positionLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        timeLabel = new JLabel("Time: 0s");
-        timeLabel.setFont(new Font("serif", Font.ITALIC, 22));
-        timeLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        if(isTimermode){
+            timeLabel = new JLabel("Time: 0s");
+            timeLabel.setFont(new Font("serif", Font.ITALIC, 22));
+            timeLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+            infoPanel.add(timeLabel);
+        }
+
 
         infoPanel.add(Box.createVerticalStrut(10));
         infoPanel.add(Box.createVerticalStrut(10));
         infoPanel.add(positionLabel);
-        infoPanel.add(timeLabel);
+
 
         mainPanel.add(infoPanel, BorderLayout.EAST);
         add(mainPanel, BorderLayout.CENTER);
@@ -131,7 +141,6 @@ public class ReplayWindow extends JFrame {
             playPauseButton.setText("Pause");
         }
         isPlaying = !isPlaying;  // Move this line here to properly toggle the state
-
     }
 
     private void startReplay() {
@@ -159,17 +168,18 @@ public class ReplayWindow extends JFrame {
         if (replayTimer != null) {
             replayTimer.stop();
         }
-        isPlaying =false;
     }
 
     private void updateToPosition(int position) {
         if (position >= 0 && position < gameController.getMaps().size()) {
-            MapMatrix currentState = new MapMatrix(gameController.getMaps().get(position));
+            MapMatrix currentState = new MapMatrix(gameController.getMaps().get(position),isTimermode,timelimit);
             gamePanel.setModel(currentState);
             gamePanel.updateview();
             positionLabel.setText(String.format("Position: %d", position));
-            int timeAtPosition = timeRecords.get(position);
-            timeLabel.setText(String.format("Time: %ds", timeAtPosition));
+            if(isTimermode){
+                int timeAtPosition = timeRecords.get(position);
+                timeLabel.setText(String.format("Time: %ds", timeAtPosition));
+            }
         }
     }
 
@@ -188,21 +198,24 @@ public class ReplayWindow extends JFrame {
         List<Integer> newTimeRecords = new ArrayList<>();
         for (int i = 0; i <= currentPosition; i++) {
             newMaps.add(MapMatrix.copyArray(gameController.getMaps().get(i)));
-            newTimeRecords.add(timeRecords.get(i));
+            if(isTimermode){
+                newTimeRecords.add(timeRecords.get(i));
+            }
+
         }
 
         // 更新游戏控制器中的状态
         gameController.getMaps().clear();
         gameController.getMaps().addAll(newMaps);
-        gameController.getTimeRecords().clear();
-        gameController.getTimeRecords().addAll(newTimeRecords);
-
-        // 恢复时间和游戏状态
-        int timeAtPosition = timeRecords.get(currentPosition);
-        gameController.getFrame().setSeconds(timeAtPosition);
-        gameController.getFrame().updateTimeLabel();
-        gameController.getFrame().resumeTimer();
-
+        if(isTimermode){
+            gameController.getTimeRecords().clear();
+            gameController.getTimeRecords().addAll(newTimeRecords);
+            // 恢复时间和游戏状态
+            int timeAtPosition = timeRecords.get(currentPosition);
+            gameController.getFrame().setSeconds(timeAtPosition);
+            gameController.getFrame().updateTimeLabel();
+            gameController.getFrame().resumeTimer();
+        }
         // 更新游戏面板
         gameController.startGameFromCurrentModel(gamePanel.getModel(), currentPosition);
     }

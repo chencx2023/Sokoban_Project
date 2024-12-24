@@ -25,7 +25,7 @@ public class LevelFrame extends JFrame {
 
     static {
         for (int i = 1; i <= NUM_LEVELS; i++) {
-            levels.add(frameController.loadmatrix(LEVELS_PATH + i + ".txt"));
+            levels.add(frameController.loadmatrix(LEVELS_PATH + i + ".txt").getMatrix());
         }
     }
 
