@@ -6,6 +6,7 @@ import java.io.IOException;
 
 public class SoundEffect {
     private Clip clip;
+    private FloatControl volumeControl;
 
     public SoundEffect(String filePath) {
         try {
@@ -33,6 +34,13 @@ public class SoundEffect {
         if (clip != null) {
             clip.setFramePosition(0); // 重置音频到开头
             clip.start(); // 开始播放
+        }
+    }
+
+    public void setVolume(float volume) {
+        if (volumeControl != null) {
+            float dB = (float) (Math.log(volume) / Math.log(10.0) * 20.0);
+            volumeControl.setValue(dB);
         }
     }
 

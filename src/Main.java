@@ -1,4 +1,6 @@
 import controller.FrameController;
+import util.MP3Player;
+import util.SoundEffect;
 import view.level.LevelFrame;
 import view.login.LoginFrame;
 import view.login.LoginSelectionFrame;
@@ -21,6 +23,11 @@ public class Main {
             frameController.setLevelFrame(levelFrame);
 
             frameController.showLoginSelectionFrame();
+
+            MP3Player backgroundMusic=new MP3Player("resource/music/background_music.mp3");
+            backgroundMusic.play();
+            backgroundMusic.setVolume(0.1f);
+
         });
     }
 }

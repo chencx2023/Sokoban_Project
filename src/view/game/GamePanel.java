@@ -85,6 +85,7 @@ public class GamePanel extends ListenerPanel {
         System.out.println("Click VK_RIGHT");
         if (controller.doMove(hero.getRow(), hero.getCol(), Direction.RIGHT)) {
             stepSound.play();
+            stepSound.setVolume(1);
             this.afterMove();
         }
     }
@@ -94,6 +95,7 @@ public class GamePanel extends ListenerPanel {
         System.out.println("Click VK_LEFT");
         if(controller.doMove(hero.getRow(), hero.getCol(), Direction.LEFT)){
             stepSound.play();
+            stepSound.setVolume(0.9f);
             this.afterMove();
         }
     }
@@ -103,6 +105,7 @@ public class GamePanel extends ListenerPanel {
         System.out.println("Click VK_Up");
        if( controller.doMove(hero.getRow(), hero.getCol(), Direction.UP)){
            stepSound.play();
+           stepSound.setVolume(1);
            this.afterMove();
        }
     }
@@ -112,6 +115,7 @@ public class GamePanel extends ListenerPanel {
         System.out.println("Click VK_DOWN");
         if(controller.doMove(hero.getRow(), hero.getCol(), Direction.DOWN)){
             stepSound.play();
+            stepSound.setVolume(1);
             this.afterMove();
         }
     }
