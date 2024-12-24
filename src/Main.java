@@ -14,7 +14,7 @@ public class Main {
             FrameController frameController=new FrameController();
 
             LoginSelectionFrame loginSelectionFrame=new LoginSelectionFrame(330,250,frameController);
-            LoginFrame loginFrame = new LoginFrame(280,280,frameController);
+            LoginFrame loginFrame = new LoginFrame(300,280,frameController);
             LevelFrame levelFrame = new LevelFrame(300,600,frameController);
 
             //将Frame和FrameController互相绑定

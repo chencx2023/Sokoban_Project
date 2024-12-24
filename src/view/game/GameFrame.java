@@ -32,6 +32,7 @@ public class GameFrame extends JFrame {
     private JButton downBtn;
     private JButton leftBtn;
     private JButton rightBtn;
+    private static final Color BACKGROUND_COLOR = new Color (255, 248, 220);
 
     private JLabel stepLabel;
     private JLabel trailLabel;
@@ -51,8 +52,9 @@ public class GameFrame extends JFrame {
         this.setTitle("2024 CS109 Project Demo");
         this.setLayout(null);
         this.setSize(width, height);
+        this.getContentPane().setBackground(BACKGROUND_COLOR);
         gamePanel = new GamePanel(mapMatrix);
-        gamePanel.setLocation(30, height / 2 - gamePanel.getHeight() / 2 - 100);
+        gamePanel.setLocation(30, height / 2 - gamePanel.getHeight() / 2 - 70);
         this.add(gamePanel);
         this.controller = new GameController(this, gamePanel, mapMatrix);
         this.frameController = frameController;
@@ -83,12 +85,12 @@ public class GameFrame extends JFrame {
         this.leftBtn = createStyledButton("←", new Point(centerX - buttonSize, startY + buttonSize), buttonSize, buttonSize, buttonFont1);
         this.rightBtn = createStyledButton("→", new Point(centerX + buttonSize, startY + buttonSize), buttonSize, buttonSize, buttonFont1);
 
-        this.stepLabel = FrameUtil.createJLabel(this, "Step:0", new Font("serif", Font.ITALIC, 22),
+        this.stepLabel = FrameUtil.createJLabel(this, "Step: 0", new Font("serif", Font.PLAIN, 24),
                 new Point(gamePanel.getWidth() + 80, 70), 180, 50);
-        this.trailLabel = FrameUtil.createJLabel(this, "Trail", new Font("serif", Font.ITALIC, 22),
-                new Point(gamePanel.getWidth() + 80, 550), 180, 50);
-        this.levelLabel=FrameUtil.createJLabel(this, "Level "+frameController.getLevel(), new Font("serif", Font.ITALIC, 22),
-                new Point(gamePanel.getWidth() + 80, 20), 180, 50);
+        this.trailLabel = FrameUtil.createJLabel(this, "Trail: 0", new Font("serif", Font.PLAIN, 24),
+                new Point(gamePanel.getWidth() + 80, 30), 180, 50);
+        this.levelLabel=FrameUtil.createJLabel(this, "Level "+frameController.getLevel(), new Font("serif", Font.PLAIN, 40),
+                new Point( 50, gamePanel.getY()-65), 180, 50);
 
         gamePanel.setStepLabel(stepLabel);
         gamePanel.setTrailLabel(trailLabel);
@@ -161,7 +163,7 @@ public class GameFrame extends JFrame {
     }
 
     private void styleButton(JButton button) {
-        button.setBackground(new Color(255, 223, 186));
+        button.setBackground(new Color(210, 180, 140));
         button.setForeground(Color.BLACK);
         button.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createBevelBorder(BevelBorder.RAISED),

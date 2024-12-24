@@ -77,10 +77,12 @@ public class GameController {
         this.view.restartGame();
         maps.clear();
         maps.add(model.getInitialMatrix());
-        timeRecords.add(0);
-        frame.setSeconds(0);
-        frame.getTimer().stop();
-        frame.getTimer().restart();
+        if(model.isTimerMode()){
+            timeRecords.add(0);
+            frame.setSeconds(0);
+            frame.getTimer().stop();
+            frame.getTimer().restart();
+        }
     }
 
     public void startGameFromCurrentModel(MapMatrix mapMatrix, int step){
