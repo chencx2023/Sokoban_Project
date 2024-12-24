@@ -20,6 +20,7 @@ import java.awt.event.ActionListener;
 
 public class GameFrame extends JFrame {
 
+    private MapMatrix mapMatrix;
     private GameController controller;
     private FrameController frameController;
     private JButton restartBtn;
@@ -48,6 +49,7 @@ public class GameFrame extends JFrame {
     private int timeLimit ;
     private boolean timerPaused = false;
     public GameFrame(int width, int height, MapMatrix mapMatrix, FrameController frameController) {
+        this.mapMatrix =mapMatrix;
         this.frameController = frameController;
         this.setTitle("2024 CS109 Project Demo");
         this.setLayout(null);
@@ -298,8 +300,11 @@ public class GameFrame extends JFrame {
     }
 
     //更新计时器标签
+
     public void updateTimeLabel(){
-        timeLabel.setText("Time:"+seconds+"/"+timeLimit);
+        if(mapMatrix.isTimerMode()){
+            timeLabel.setText("Time:"+seconds+"/"+timeLimit);
+        }
     }
     //停止计时器
     public void stopTimer(){
