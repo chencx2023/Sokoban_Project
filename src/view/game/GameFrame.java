@@ -35,6 +35,7 @@ public class GameFrame extends JFrame {
 
     private JLabel stepLabel;
     private JLabel trailLabel;
+    private JLabel levelLabel;
     private GamePanel gamePanel;
     private Clip clickSound;
 
@@ -85,10 +86,13 @@ public class GameFrame extends JFrame {
         this.stepLabel = FrameUtil.createJLabel(this, "Step:0", new Font("serif", Font.ITALIC, 22),
                 new Point(gamePanel.getWidth() + 80, 70), 180, 50);
         this.trailLabel = FrameUtil.createJLabel(this, "Trail", new Font("serif", Font.ITALIC, 22),
+                new Point(gamePanel.getWidth() + 80, 550), 180, 50);
+        this.levelLabel=FrameUtil.createJLabel(this, "Level "+frameController.getLevel(), new Font("serif", Font.ITALIC, 22),
                 new Point(gamePanel.getWidth() + 80, 20), 180, 50);
 
         gamePanel.setStepLabel(stepLabel);
         gamePanel.setTrailLabel(trailLabel);
+        gamePanel.setLevelLabel(levelLabel);
 
         if (mapMatrix.isTimerMode()) {
             initializeTimerComponents(mapMatrix.getTimeLimit());

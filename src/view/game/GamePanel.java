@@ -30,6 +30,7 @@ public class GamePanel extends ListenerPanel {
     private GameController controller;
     private JLabel stepLabel;
     private JLabel trailLabel;
+    private JLabel levelLabel;
 
     private int steps;
     private int trail = 0;
@@ -54,6 +55,13 @@ public class GamePanel extends ListenerPanel {
         this.trailLabel = trailLabel;
     }
 
+    public JLabel getLevelLabel() {
+        return levelLabel;
+    }
+
+    public void setLevelLabel(JLabel levelLabel) {
+        this.levelLabel = levelLabel;
+    }
 
     public void initialGame() {
         this.steps = 0;
